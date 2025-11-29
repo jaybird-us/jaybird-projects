@@ -46,6 +46,10 @@ export async function initDatabase() {
       subscription_status TEXT DEFAULT 'active',
       subscription_expires_at TEXT,
 
+      -- Stripe billing
+      stripe_customer_id TEXT,
+      stripe_subscription_id TEXT,
+
       -- Global settings
       settings_json TEXT DEFAULT '{}'
     );
@@ -191,7 +195,14 @@ export function getInstallationSettings(installationId) {
     }
   };
 
-  return { ...defaults, ...installation.settings };
+  return {
+    ...defaults,
+    ...installation.settings,
+    stripeCustomerId: installation.stripe_customer_id,
+    stripeSubscriptionId: installation.stripe_subscription_id,
+    tier: installation.tier,
+    subscriptionStatus: installation.subscription_status
+  };
 }
 
 export function updateInstallationSettings(installationId, settings) {
@@ -363,4 +374,41 @@ export function isWithinTierLimits(installationId, issueCount) {
   };
 
   return issueCount <= (limits[subscription.tier] || limits.free);
+}
+
+/**
+ * Update installation subscription from Stripe webhook
+ */
+export function updateInstallationSubscription(installationId, data) {
+  const updates = [];
+  const values = [];
+
+  if (data.stripeCustomerId !== undefined) {
+    updates.push('stripe_customer_id = ?');
+    values.push(data.stripeCustomerId);
+  }
+  if (data.stripeSubscriptionId !== undefined) {
+    updates.push('stripe_subscription_id = ?');
+    values.push(data.stripeSubscriptionId);
+  }
+  if (data.plan !== undefined) {
+    updates.push('tier = ?');
+    values.push(data.plan);
+  }
+  if (data.subscriptionStatus !== undefined) {
+    updates.push('subscription_status = ?');
+    values.push(data.subscriptionStatus);
+  }
+
+  if (updates.length === 0) return;
+
+  updates.push('updated_at = CURRENT_TIMESTAMP');
+  values.push(installationId);
+
+  const stmt = getDatabase().prepare(`
+    UPDATE installations SET ${updates.join(', ')}
+    WHERE installation_id = ?
+  `);
+
+  return stmt.run(...values);
 }

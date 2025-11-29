@@ -20,6 +20,15 @@ import { pino } from 'pino';
 import { createWebhookHandler } from './webhooks/handler.js';
 import { initDatabase } from './lib/database.js';
 import { GitHubAppAuth } from './lib/github-auth.js';
+import {
+  createCheckoutSession,
+  createPortalSession,
+  getSubscriptionStatus,
+  handleWebhookEvent,
+  verifyWebhookSignature,
+  PRICE_IDS,
+  PLAN_LIMITS
+} from './lib/stripe.js';
 
 // Logger
 const logger = pino({
@@ -44,6 +53,23 @@ app.get('/health', (req, res) => {
 app.post('/api/webhook',
   express.raw({ type: 'application/json' }),
   createWebhookHandler(logger)
+);
+
+// Stripe webhook endpoint (raw body for signature verification)
+app.post('/api/stripe/webhook',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['stripe-signature'];
+
+    try {
+      const event = verifyWebhookSignature(req.body, signature);
+      await handleWebhookEvent(event, logger);
+      res.json({ received: true });
+    } catch (error) {
+      logger.error({ error: error.message }, 'Stripe webhook error');
+      res.status(400).json({ error: error.message });
+    }
+  }
 );
 
 // JSON parsing for other routes
@@ -120,6 +146,79 @@ app.get('/api/installations/:installationId/variance-report', async (req, res) =
     res.json(report);
   } catch (error) {
     logger.error({ error }, 'Failed to generate variance report');
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Billing routes
+app.get('/api/billing/prices', (req, res) => {
+  res.json({
+    prices: PRICE_IDS,
+    limits: PLAN_LIMITS
+  });
+});
+
+app.get('/api/installations/:installationId/subscription', async (req, res) => {
+  try {
+    const { getInstallationSettings } = await import('./lib/database.js');
+    const settings = getInstallationSettings(parseInt(req.params.installationId));
+
+    if (!settings) {
+      return res.status(404).json({ error: 'Installation not found' });
+    }
+
+    const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
+    res.json({
+      ...subscription,
+      limits: PLAN_LIMITS[subscription.plan]
+    });
+  } catch (error) {
+    logger.error({ error }, 'Failed to get subscription');
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/installations/:installationId/checkout', async (req, res) => {
+  try {
+    const { plan } = req.body;
+    const installationId = parseInt(req.params.installationId);
+
+    const priceId = plan === 'enterprise' ? PRICE_IDS.enterprise : PRICE_IDS.pro;
+    const baseUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
+
+    const session = await createCheckoutSession({
+      installationId,
+      priceId,
+      successUrl: `${baseUrl}/?checkout=success`,
+      cancelUrl: `${baseUrl}/?checkout=canceled`
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    logger.error({ error }, 'Failed to create checkout session');
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/installations/:installationId/portal', async (req, res) => {
+  try {
+    const { getInstallationSettings } = await import('./lib/database.js');
+    const settings = getInstallationSettings(parseInt(req.params.installationId));
+
+    if (!settings?.stripeCustomerId) {
+      return res.status(400).json({ error: 'No active subscription' });
+    }
+
+    const baseUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
+
+    const session = await createPortalSession({
+      customerId: settings.stripeCustomerId,
+      returnUrl: baseUrl
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    logger.error({ error }, 'Failed to create portal session');
     res.status(500).json({ error: error.message });
   }
 });
