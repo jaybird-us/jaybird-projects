@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36pt" height="36pt" viewBox="0 0 36 36" version="1.1">
+<defs>
+<linearGradient id="linear0" gradientUnits="userSpaceOnUse" x1="6.414" y1="-1993.661987" x2="41.773998" y2="-2019.488037" gradientTransform="matrix(0.75,0,0,-0.75,0,-1485)">
+<stop offset="0" style="stop-color:rgb(65.882355%,88.627452%,96.862745%);stop-opacity:1;"/>
+<stop offset="1" style="stop-color:rgb(27.843139%,75.686276%,100%);stop-opacity:1;"/>
+</linearGradient>
+<linearGradient id="linear1" gradientUnits="userSpaceOnUse" x1="6.42" y1="-1986.608032" x2="41.198002" y2="-1993.680054" gradientTransform="matrix(0.75,0,0,-0.75,0,-1485)">
+<stop offset="0" style="stop-color:rgb(0%,46.666667%,82.352942%);stop-opacity:1;"/>
+<stop offset="1" style="stop-color:rgb(4.313726%,34.901962%,63.529414%);stop-opacity:1;"/>
+</linearGradient>
+<filter id="alpha" filterUnits="objectBoundingBox" x="0%" y="0%" width="100%" height="100%">
+  <feColorMatrix type="matrix" in="SourceGraphic" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/>
+</filter>
+<mask id="mask0">
+  <g filter="url(#alpha)">
+<rect x="0" y="0" width="36" height="36" style="fill:rgb(0%,0%,0%);fill-opacity:0.05;stroke:none;"/>
+  </g>
+</mask>
+<clipPath id="clip1">
+  <rect x="0" y="0" width="36" height="36"/>
+</clipPath>
+<g id="surface415" clip-path="url(#clip1)">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 26.625 9.375 C 25.382812 9.375 24.375 8.367188 24.375 7.125 L 24.375 4.5 L 28.875 4.5 L 28.875 7.125 C 28.875 8.367188 27.867188 9.375 26.625 9.375 Z M 26.625 9.375 "/>
+</g>
+<mask id="mask1">
+  <g filter="url(#alpha)">
+<rect x="0" y="0" width="36" height="36" style="fill:rgb(0%,0%,0%);fill-opacity:0.07;stroke:none;"/>
+  </g>
+</mask>
+<clipPath id="clip2">
+  <rect x="0" y="0" width="36" height="36"/>
+</clipPath>
+<g id="surface419" clip-path="url(#clip2)">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 26.625 8.8125 C 25.691406 8.8125 24.9375 8.058594 24.9375 7.125 L 24.9375 4.5 L 28.3125 4.5 L 28.3125 7.125 C 28.3125 8.058594 27.558594 8.8125 26.625 8.8125 Z M 26.625 8.8125 "/>
+</g>
+<mask id="mask2">
+  <g filter="url(#alpha)">
+<rect x="0" y="0" width="36" height="36" style="fill:rgb(0%,0%,0%);fill-opacity:0.05;stroke:none;"/>
+  </g>
+</mask>
+<clipPath id="clip3">
+  <rect x="0" y="0" width="36" height="36"/>
+</clipPath>
+<g id="surface423" clip-path="url(#clip3)">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 9.375 9.375 C 8.132812 9.375 7.125 8.367188 7.125 7.125 L 7.125 4.5 L 11.625 4.5 L 11.625 7.125 C 11.625 8.367188 10.617188 9.375 9.375 9.375 Z M 9.375 9.375 "/>
+</g>
+<mask id="mask3">
+  <g filter="url(#alpha)">
+<rect x="0" y="0" width="36" height="36" style="fill:rgb(0%,0%,0%);fill-opacity:0.07;stroke:none;"/>
+  </g>
+</mask>
+<clipPath id="clip4">
+  <rect x="0" y="0" width="36" height="36"/>
+</clipPath>
+<g id="surface427" clip-path="url(#clip4)">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 9.375 8.8125 C 8.441406 8.8125 7.6875 8.058594 7.6875 7.125 L 7.6875 4.5 L 11.0625 4.5 L 11.0625 7.125 C 11.0625 8.058594 10.308594 8.8125 9.375 8.8125 Z M 9.375 8.8125 "/>
+</g>
+</defs>
+<g id="surface408">
+<path style=" stroke:none;fill-rule:nonzero;fill:url(#linear0);" d="M 4.5 30 L 4.5 9 L 31.5 9 L 31.5 30 C 31.496094 30.828125 30.828125 31.496094 30 31.5 L 6 31.5 C 5.171875 31.496094 4.503906 30.828125 4.5 30 Z M 4.5 30 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:url(#linear1);" d="M 31.5 6 L 31.5 10.5 L 4.5 10.5 L 4.5 6 C 4.503906 5.171875 5.171875 4.503906 6 4.5 L 30 4.5 C 30.828125 4.503906 31.496094 5.171875 31.5 6 Z M 31.5 6 "/>
+<use xlink:href="#surface415" mask="url(#mask0)"/>
+<use xlink:href="#surface419" mask="url(#mask1)"/>
+<use xlink:href="#surface423" mask="url(#mask2)"/>
+<use xlink:href="#surface427" mask="url(#mask3)"/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(23.529412%,79.607844%,95.686275%);fill-opacity:1;" d="M 9.375 8.25 C 8.753906 8.25 8.25 7.746094 8.25 7.125 L 8.25 4.125 C 8.25 3.503906 8.753906 3 9.375 3 C 9.996094 3 10.5 3.503906 10.5 4.125 L 10.5 7.125 C 10.5 7.746094 9.996094 8.25 9.375 8.25 Z M 9.375 8.25 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(89.803922%,12.54902%,18.82353%);fill-opacity:1;" d="M 25.875 14.25 L 28.125 14.25 C 28.332031 14.25 28.5 14.417969 28.5 14.625 L 28.5 16.875 C 28.5 17.082031 28.332031 17.25 28.125 17.25 L 25.875 17.25 C 25.667969 17.25 25.5 17.082031 25.5 16.875 L 25.5 14.625 C 25.5 14.417969 25.667969 14.25 25.875 14.25 Z M 25.875 14.25 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(89.803922%,12.54902%,18.82353%);fill-opacity:1;" d="M 25.875 19.5 L 28.125 19.5 C 28.332031 19.5 28.5 19.667969 28.5 19.875 L 28.5 22.125 C 28.5 22.332031 28.332031 22.5 28.125 22.5 L 25.875 22.5 C 25.667969 22.5 25.5 22.332031 25.5 22.125 L 25.5 19.875 C 25.5 19.667969 25.667969 19.5 25.875 19.5 Z M 25.875 19.5 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(89.803922%,12.54902%,18.82353%);fill-opacity:1;" d="M 25.875 24.75 L 28.125 24.75 C 28.332031 24.75 28.5 24.917969 28.5 25.125 L 28.5 27.375 C 28.5 27.582031 28.332031 27.75 28.125 27.75 L 25.875 27.75 C 25.667969 27.75 25.5 27.582031 25.5 27.375 L 25.5 25.125 C 25.5 24.917969 25.667969 24.75 25.875 24.75 Z M 25.875 24.75 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 19.875 14.25 L 22.125 14.25 C 22.332031 14.25 22.5 14.417969 22.5 14.625 L 22.5 16.875 C 22.5 17.082031 22.332031 17.25 22.125 17.25 L 19.875 17.25 C 19.667969 17.25 19.5 17.082031 19.5 16.875 L 19.5 14.625 C 19.5 14.417969 19.667969 14.25 19.875 14.25 Z M 19.875 14.25 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 13.875 14.25 L 16.125 14.25 C 16.332031 14.25 16.5 14.417969 16.5 14.625 L 16.5 16.875 C 16.5 17.082031 16.332031 17.25 16.125 17.25 L 13.875 17.25 C 13.667969 17.25 13.5 17.082031 13.5 16.875 L 13.5 14.625 C 13.5 14.417969 13.667969 14.25 13.875 14.25 Z M 13.875 14.25 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 7.875 14.25 L 10.125 14.25 C 10.332031 14.25 10.5 14.417969 10.5 14.625 L 10.5 16.875 C 10.5 17.082031 10.332031 17.25 10.125 17.25 L 7.875 17.25 C 7.667969 17.25 7.5 17.082031 7.5 16.875 L 7.5 14.625 C 7.5 14.417969 7.667969 14.25 7.875 14.25 Z M 7.875 14.25 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 19.875 19.5 L 22.125 19.5 C 22.332031 19.5 22.5 19.667969 22.5 19.875 L 22.5 22.125 C 22.5 22.332031 22.332031 22.5 22.125 22.5 L 19.875 22.5 C 19.667969 22.5 19.5 22.332031 19.5 22.125 L 19.5 19.875 C 19.5 19.667969 19.667969 19.5 19.875 19.5 Z M 19.875 19.5 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 13.875 19.5 L 16.125 19.5 C 16.332031 19.5 16.5 19.667969 16.5 19.875 L 16.5 22.125 C 16.5 22.332031 16.332031 22.5 16.125 22.5 L 13.875 22.5 C 13.667969 22.5 13.5 22.332031 13.5 22.125 L 13.5 19.875 C 13.5 19.667969 13.667969 19.5 13.875 19.5 Z M 13.875 19.5 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 7.875 19.5 L 10.125 19.5 C 10.332031 19.5 10.5 19.667969 10.5 19.875 L 10.5 22.125 C 10.5 22.332031 10.332031 22.5 10.125 22.5 L 7.875 22.5 C 7.667969 22.5 7.5 22.332031 7.5 22.125 L 7.5 19.875 C 7.5 19.667969 7.667969 19.5 7.875 19.5 Z M 7.875 19.5 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 19.875 24.75 L 22.125 24.75 C 22.332031 24.75 22.5 24.917969 22.5 25.125 L 22.5 27.375 C 22.5 27.582031 22.332031 27.75 22.125 27.75 L 19.875 27.75 C 19.667969 27.75 19.5 27.582031 19.5 27.375 L 19.5 25.125 C 19.5 24.917969 19.667969 24.75 19.875 24.75 Z M 19.875 24.75 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 13.875 24.75 L 16.125 24.75 C 16.332031 24.75 16.5 24.917969 16.5 25.125 L 16.5 27.375 C 16.5 27.582031 16.332031 27.75 16.125 27.75 L 13.875 27.75 C 13.667969 27.75 13.5 27.582031 13.5 27.375 L 13.5 25.125 C 13.5 24.917969 13.667969 24.75 13.875 24.75 Z M 13.875 24.75 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 7.875 24.75 L 10.125 24.75 C 10.332031 24.75 10.5 24.917969 10.5 25.125 L 10.5 27.375 C 10.5 27.582031 10.332031 27.75 10.125 27.75 L 7.875 27.75 C 7.667969 27.75 7.5 27.582031 7.5 27.375 L 7.5 25.125 C 7.5 24.917969 7.667969 24.75 7.875 24.75 Z M 7.875 24.75 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(23.529412%,79.607844%,95.686275%);fill-opacity:1;" d="M 26.625 8.25 C 26.003906 8.25 25.5 7.746094 25.5 7.125 L 25.5 4.125 C 25.5 3.503906 26.003906 3 26.625 3 C 27.246094 3 27.75 3.503906 27.75 4.125 L 27.75 7.125 C 27.75 7.746094 27.246094 8.25 26.625 8.25 Z M 26.625 8.25 "/>
+</g>
+</svg>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36pt" height="36pt" viewBox="0 0 36 36" version="1.1">
+<defs>
+<linearGradient id="linear0" gradientUnits="userSpaceOnUse" x1="711.5" y1="409.459015" x2="711.5" y2="400" gradientTransform="matrix(0.75,0,0,0.75,-522.375,-297.375)">
+<stop offset="0" style="stop-color:rgb(25.882354%,63.921571%,94.901961%);stop-opacity:1;"/>
+<stop offset="1" style="stop-color:rgb(25.882354%,64.313728%,92.156863%);stop-opacity:1;"/>
+</linearGradient>
+<linearGradient id="linear1" gradientUnits="userSpaceOnUse" x1="699.5" y1="443.459015" x2="699.5" y2="434" gradientTransform="matrix(0.75,0,0,0.75,-499.875,-310.875)">
+<stop offset="0" style="stop-color:rgb(18.82353%,47.450981%,83.92157%);stop-opacity:1;"/>
+<stop offset="1" style="stop-color:rgb(16.078432%,48.627451%,82.352942%);stop-opacity:1;"/>
+</linearGradient>
+<linearGradient id="linear2" gradientUnits="userSpaceOnUse" x1="699.5" y1="459.459015" x2="699.5" y2="450" gradientTransform="matrix(0.75,0,0,0.75,-499.875,-310.875)">
+<stop offset="0" style="stop-color:rgb(18.82353%,47.450981%,83.92157%);stop-opacity:1;"/>
+<stop offset="1" style="stop-color:rgb(16.078432%,48.627451%,82.352942%);stop-opacity:1;"/>
+</linearGradient>
+</defs>
+<g id="surface282">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(39.215687%,44.313726%,48.627451%);fill-opacity:1;" d="M 12 4.5 L 10.5 4.5 L 10.5 28.5 C 10.5 29.742188 11.507812 30.75 12.75 30.75 L 19.5 30.75 L 19.5 29.25 L 12.75 29.25 C 12.335938 29.25 12 28.914062 12 28.5 L 12 18.75 L 19.5 18.75 L 19.5 17.25 L 12 17.25 Z M 12 4.5 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:url(#linear0);" d="M 16.5 2.25 L 6 2.25 C 5.585938 2.25 5.25 2.585938 5.25 3 L 5.25 9 C 5.25 9.414062 5.585938 9.75 6 9.75 L 16.5 9.75 C 16.914062 9.75 17.25 9.414062 17.25 9 L 17.25 3 C 17.25 2.585938 16.914062 2.25 16.5 2.25 Z M 16.5 2.25 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:url(#linear1);" d="M 30 14.25 L 19.5 14.25 C 19.085938 14.25 18.75 14.585938 18.75 15 L 18.75 21 C 18.75 21.414062 19.085938 21.75 19.5 21.75 L 30 21.75 C 30.414062 21.75 30.75 21.414062 30.75 21 L 30.75 15 C 30.75 14.585938 30.414062 14.25 30 14.25 Z M 30 14.25 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:url(#linear2);" d="M 30 26.25 L 19.5 26.25 C 19.085938 26.25 18.75 26.585938 18.75 27 L 18.75 33 C 18.75 33.414062 19.085938 33.75 19.5 33.75 L 30 33.75 C 30.414062 33.75 30.75 33.414062 30.75 33 L 30.75 27 C 30.75 26.585938 30.414062 26.25 30 26.25 Z M 30 26.25 "/>
+</g>
+</svg>
