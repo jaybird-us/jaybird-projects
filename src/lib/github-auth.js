@@ -10,11 +10,18 @@ import { Octokit } from '@octokit/rest';
 export class GitHubAppAuth {
   constructor() {
     this.appId = process.env.GITHUB_APP_ID;
-    this.privateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+    let privateKey = process.env.GITHUB_APP_PRIVATE_KEY;
 
-    if (!this.appId || !this.privateKey) {
+    if (!this.appId || !privateKey) {
       throw new Error('GITHUB_APP_ID and GITHUB_APP_PRIVATE_KEY are required');
     }
+
+    // Handle escaped newlines (Railway and other platforms may escape them)
+    if (privateKey.includes('\\n')) {
+      privateKey = privateKey.replace(/\\n/g, '\n');
+    }
+
+    this.privateKey = privateKey;
 
     // Initialize the GitHub App
     this.app = new App({
