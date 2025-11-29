@@ -1,0 +1,43 @@
+{
+  "name": "projectflow-github-app",
+  "version": "1.0.0",
+  "description": "MS Project-style scheduling for GitHub Projects - automatic date calculations, dependencies, baselines, and variance tracking",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "node --test src/**/*.test.js",
+    "setup": "node scripts/setup.js"
+  },
+  "keywords": [
+    "github",
+    "github-app",
+    "project-management",
+    "scheduling",
+    "ms-project",
+    "dependencies",
+    "gantt"
+  ],
+  "author": "BlackWing",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/app": "^14.0.0",
+    "@octokit/auth-app": "^6.0.0",
+    "@octokit/rest": "^20.0.0",
+    "@octokit/webhooks": "^12.0.0",
+    "better-sqlite3": "^9.2.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pino": "^8.16.2",
+    "pino-pretty": "^10.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

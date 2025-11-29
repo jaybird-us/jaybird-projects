@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProjectFlow - MS Project for GitHub</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .logo span {
+      color: var(--text);
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 2rem;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-muted);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 3rem 0;
+    }
+
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .feature h3 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature p {
+      color: var(--text-muted);
+    }
+
+    .pricing {
+      padding: 3rem 0;
+    }
+
+    .pricing h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent);
+      position: relative;
+    }
+
+    .pricing-card.featured::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      padding: 0.25rem 1rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .pricing-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-card .price {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .pricing-card .price span {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .pricing-card ul {
+      list-style: none;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+
+    .pricing-card li {
+      padding: 0.5rem 0;
+      color: var(--text-muted);
+    }
+
+    .pricing-card li::before {
+      content: '✓';
+      color: var(--success);
+      margin-right: 0.5rem;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
+    .dashboard.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .status.ahead {
+      background: rgba(63, 185, 80, 0.2);
+      color: var(--success);
+    }
+
+    .status.on-track {
+      background: rgba(210, 153, 34, 0.2);
+      color: var(--warning);
+    }
+
+    .status.behind {
+      background: rgba(248, 81, 73, 0.2);
+      color: var(--danger);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      nav a {
+        margin: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Project<span>Flow</span></div>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://github.com/apps/projectflow" target="_blank">Install</a>
+      <a href="https://github.com/projectflow/docs" target="_blank">Docs</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>MS Project for GitHub</h1>
+      <p>
+        Automatic date calculations, dependency tracking, baseline comparisons,
+        and variance analysis. All inside GitHub Projects.
+      </p>
+      <a href="https://github.com/apps/projectflow" class="btn btn-primary">
+        Install Free on GitHub
+      </a>
+      <a href="#features" class="btn btn-secondary" style="margin-left: 1rem;">
+        Learn More
+      </a>
+    </section>
+
+    <section id="features" class="container">
+      <div class="features">
+        <div class="feature">
+          <h3>🔗 Automatic Dependencies</h3>
+          <p>
+            Uses GitHub's native "blocked by" relationships.
+            Blocked issues automatically start after their blockers complete.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>📅 Working Day Calculations</h3>
+          <p>
+            Excludes weekends and custom holidays.
+            Configure your organization's work schedule.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>📊 T-Shirt Sizing</h3>
+          <p>
+            Estimate field (XS-XXL) converts to working days.
+            Confidence field adds appropriate buffer time.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>📈 Baseline Tracking</h3>
+          <p>
+            Save your original plan. Compare current vs baseline.
+            See which items are ahead, on track, or behind.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>🔄 Milestone Roll-ups</h3>
+          <p>
+            Milestone dates automatically calculated from child epics.
+            Parent issues roll up from sub-issues.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>⚡ Real-time Updates</h3>
+          <p>
+            Close an issue early? Dates cascade to dependents.
+            Running late? Everything adjusts automatically.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="container pricing">
+      <h2>Simple, Transparent Pricing</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Free</h3>
+          <div class="price">$0<span>/month</span></div>
+          <ul>
+            <li>Up to 50 tracked issues</li>
+            <li>Automatic date calculations</li>
+            <li>Dependency tracking</li>
+            <li>Working day calendars</li>
+            <li>Community support</li>
+          </ul>
+          <a href="https://github.com/apps/projectflow" class="btn btn-secondary">
+            Get Started
+          </a>
+        </div>
+        <div class="pricing-card featured">
+          <h3>Pro</h3>
+          <div class="price">$9<span>/month</span></div>
+          <ul>
+            <li>Unlimited tracked issues</li>
+            <li>Everything in Free</li>
+            <li>Baseline tracking</li>
+            <li>Variance reports</li>
+            <li>Custom holidays</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="https://github.com/apps/projectflow" class="btn btn-primary">
+            Start Free Trial
+          </a>
+        </div>
+        <div class="pricing-card">
+          <h3>Enterprise</h3>
+          <div class="price">$49<span>/month</span></div>
+          <ul>
+            <li>Everything in Pro</li>
+            <li>Multiple projects</li>
+            <li>API access</li>
+            <li>Audit logs</li>
+            <li>SSO support</li>
+            <li>Dedicated support</li>
+          </ul>
+          <a href="mailto:enterprise@projectflow.dev" class="btn btn-secondary">
+            Contact Sales
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2024 ProjectFlow. Built with ❤️ for project managers who love GitHub.</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="/privacy" style="color: var(--text-muted);">Privacy</a> ·
+      <a href="/terms" style="color: var(--text-muted);">Terms</a> ·
+      <a href="https://github.com/projectflow" style="color: var(--text-muted);">GitHub</a>
+    </p>
+  </footer>
+
+  <script>
+    // Check if user is authenticated and show dashboard
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/installations');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.installations && data.installations.length > 0) {
+            // User has installations, could show dashboard
+            console.log('Installations:', data.installations);
+          }
+        }
+      } catch (error) {
+        console.log('Not authenticated');
+      }
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>
