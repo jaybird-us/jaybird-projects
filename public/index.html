@@ -28,6 +28,22 @@
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body > * {
+      position: relative;
+      z-index: 1;
     }
 
     .container {
@@ -63,23 +79,24 @@
       backdrop-filter: blur(10px);
       background-image: linear-gradient(135deg, #d5caac, #fff3);
       border: 1px solid #baa671;
-      border-radius: 25em;
+      border-radius: 100px;
       align-self: flex-start;
-      margin-top: -0.25rem;
+      margin-top: -4px;
       margin-left: auto;
-      margin-right: -0.72rem;
-      padding: 6px 8px 2px;
+      margin-right: -12px;
+      padding: 2px 8px 3px;
       display: flex;
       align-items: center;
+      height: 14px;
     }
 
     .logo-badge-text {
       color: #fff;
-      letter-spacing: 0.04rem;
+      letter-spacing: 1px;
       mix-blend-mode: overlay;
       font-family: 'Open Sans', sans-serif;
       font-size: 8px;
-      line-height: 1;
+      line-height: 8px;
     }
 
     nav a {
@@ -163,7 +180,7 @@
     }
 
     .feature h3 {
-      color: var(--accent);
+      color: #fff;
       margin-bottom: 0.5rem;
     }
 
