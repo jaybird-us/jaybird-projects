@@ -1,5 +1,5 @@
 {
-  "name": "projectflow-github-app",
+  "name": "jaybird-projects",
   "version": "1.0.0",
   "description": "MS Project-style scheduling for GitHub Projects - automatic date calculations, dependencies, baselines, and variance tracking",
   "main": "src/index.js",
@@ -19,7 +19,7 @@
     "dependencies",
     "gantt"
   ],
-  "author": "BlackWing",
+  "author": "jayBird",
   "license": "MIT",
   "dependencies": {
     "@octokit/app": "^14.0.0",

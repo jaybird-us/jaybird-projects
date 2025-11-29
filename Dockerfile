@@ -1,4 +1,4 @@
-# ProjectFlow GitHub App
+# jayBird Projects GitHub App
 # Multi-stage build for minimal image size
 
 FROM node:20-alpine AS builder

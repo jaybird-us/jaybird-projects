@@ -1,6 +1,8 @@
-# ProjectFlow - MS Project for GitHub
+# jayBird Projects - MS Project for GitHub
 
 > Automatic date calculations, dependency tracking, baseline comparisons, and variance analysis for GitHub Projects.
+
+**By [jayBird](https://jaybird.us) | Created by Jeremy Paxton ([@jeremy-paxton](https://github.com/jeremy-paxton))**
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Node](https://img.shields.io/badge/node-%3E%3D20-green)
@@ -32,7 +34,7 @@ Issue Closed → Webhook → Calculate Dependencies → Update Dates → Cascade
 
 ### 1. Install the GitHub App
 
-Visit [github.com/apps/projectflow](https://github.com/apps/projectflow) and install on your organization.
+Visit [github.com/apps/jaybird-projects](https://github.com/apps/jaybird-projects) and install on your organization.
 
 ### 2. Configure Your Project
 
@@ -71,7 +73,7 @@ The app will automatically calculate start dates based on blockers.
 1. Go to **Settings → Developer settings → GitHub Apps → New GitHub App**
 
 2. Configure:
-   - **Name**: ProjectFlow (or your name)
+   - **Name**: jayBird Projects (or your name)
    - **Homepage URL**: Your app URL
    - **Webhook URL**: `https://your-domain.com/api/webhook`
    - **Webhook secret**: Generate a random string
@@ -104,7 +106,7 @@ GITHUB_WEBHOOK_SECRET=your_webhook_secret
 PORT=3000
 NODE_ENV=production
 LOG_LEVEL=info
-DATABASE_PATH=./data/projectflow.db
+DATABASE_PATH=./data/jaybird-projects.db
 
 # Billing (optional)
 ENABLE_BILLING=false
@@ -113,7 +115,7 @@ FREE_TIER_MAX_ISSUES=50
 
 ### Deploy to Railway
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/projectflow)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/jaybird-projects)
 
 1. Click the button above
 2. Add environment variables
@@ -129,21 +131,21 @@ vercel --prod
 ### Deploy with Docker
 
 ```bash
-docker build -t projectflow .
+docker build -t jaybird-projects .
 docker run -p 3000:3000 \
   -e GITHUB_APP_ID=123456 \
   -e GITHUB_APP_PRIVATE_KEY="..." \
   -e GITHUB_WEBHOOK_SECRET="..." \
-  -v projectflow-data:/app/data \
-  projectflow
+  -v jaybird-projects-data:/app/data \
+  jaybird-projects
 ```
 
 ### Local Development
 
 ```bash
 # Clone and install
-git clone https://github.com/yourorg/projectflow-app.git
-cd projectflow-app
+git clone https://github.com/jaybird-us/jaybird-projects.git
+cd jaybird-projects
 npm install
 
 # Configure
@@ -198,28 +200,26 @@ PUT /api/installations/:id/settings
 
 ## Compared to MS Project
 
-| Feature | MS Project | ProjectFlow |
-|---------|------------|-------------|
-| Dependencies | ✅ | ✅ GitHub blocking |
-| Working days | ✅ | ✅ |
-| Baselines | ✅ | ✅ |
-| % Complete | ✅ | ✅ |
-| Critical Path | ✅ | 🔜 Coming soon |
-| Gantt Chart | ✅ | 🔜 Via Mermaid |
-| Resource Leveling | ✅ | ❌ Not planned |
-| Cost Tracking | ✅ | ❌ Not planned |
+| Feature | MS Project | jayBird Projects |
+|---------|------------|------------------|
+| Dependencies | Yes | Yes (GitHub blocking) |
+| Working days | Yes | Yes |
+| Baselines | Yes | Yes |
+| % Complete | Yes | Yes |
+| Critical Path | Yes | Coming soon |
+| Gantt Chart | Yes | Coming soon (via Mermaid) |
+| Resource Leveling | Yes | Not planned |
+| Cost Tracking | Yes | Not planned |
 
 ## Support
 
-- 📖 [Documentation](https://docs.projectflow.dev)
-- 💬 [GitHub Discussions](https://github.com/projectflow/discussions)
-- 🐛 [Issue Tracker](https://github.com/projectflow/issues)
-- 📧 [Email](mailto:support@projectflow.dev)
+- [GitHub Issues](https://github.com/jaybird-us/jaybird-projects/issues)
+- [Email](mailto:support@jaybird.us)
 
 ## License
 
-MIT © ProjectFlow
+MIT - jayBird
 
 ---
 
-Built with ❤️ for project managers who love GitHub.
+Built by jayBird for project managers who love GitHub.

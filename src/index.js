@@ -1,7 +1,10 @@
 /**
- * ProjectFlow - MS Project-style scheduling for GitHub Projects
+ * jayBird Projects - MS Project-style scheduling for GitHub Projects
  *
- * A GitHub App that provides:
+ * A GitHub App by jayBird (https://jaybird.us)
+ * Created by Jeremy Paxton (@jeremy-paxton)
+ *
+ * Features:
  * - Automatic date calculations based on dependencies
  * - Estimate → working days conversion
  * - Confidence → buffer days calculation
@@ -154,7 +157,7 @@ async function start() {
     // Start server
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
-      logger.info({ port }, 'ProjectFlow server started');
+      logger.info({ port }, 'jayBird Projects server started');
       logger.info('Webhook URL: POST /api/webhook');
       logger.info('Health check: GET /health');
     });
