@@ -46,13 +46,20 @@
     }
 
     .logo {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
     }
 
-    .logo span {
-      color: var(--text);
+    .logo img {
+      height: 32px;
+    }
+
+    .logo-badge {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
     }
 
     nav a {
@@ -299,7 +306,10 @@
 </head>
 <body>
   <header>
-    <a href="/" class="logo"><img src="/logo_dark.svg" alt="jayBird Projects" height="32"></a>
+    <a href="/" class="logo">
+      <img src="/logo_dark.svg" alt="jayBird">
+      <span class="logo-badge">Projects</span>
+    </a>
     <nav>
       <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
