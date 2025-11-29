@@ -31,20 +31,6 @@
       position: relative;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
-      background-size: 24px 24px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    body > * {
-      position: relative;
-      z-index: 1;
-    }
 
     .container {
       max-width: 1200px;
@@ -84,7 +70,7 @@
       margin-top: -4px;
       margin-left: auto;
       margin-right: -12px;
-      padding: 2px 8px 3px;
+      padding: 4px 8px 3px;
       display: flex;
       align-items: center;
       height: 14px;
@@ -114,6 +100,49 @@
       text-align: center;
       padding: 4rem 2rem;
       background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 30px 30px;
+      mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black, transparent);
+      -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black, transparent);
+      pointer-events: none;
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .features-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .features-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 30px 30px;
+      mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent);
+      -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent);
+      pointer-events: none;
+    }
+
+    .features-section > * {
+      position: relative;
+      z-index: 1;
     }
 
     .hero h1 {
@@ -378,7 +407,7 @@
       </a>
     </section>
 
-    <section id="features" class="container">
+    <section id="features" class="container features-section">
       <div class="features">
         <div class="feature">
           <img src="/dependencies.svg" alt="" class="feature-icon">
