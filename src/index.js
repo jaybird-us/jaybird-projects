@@ -149,10 +149,14 @@ async function start() {
     await initDatabase();
     logger.info('Database initialized');
 
-    // Verify GitHub App credentials
-    const auth = new GitHubAppAuth();
-    await auth.verifyCredentials();
-    logger.info({ appId: process.env.GITHUB_APP_ID }, 'GitHub App credentials verified');
+    // Verify GitHub App credentials (non-fatal if fails)
+    try {
+      const auth = new GitHubAppAuth();
+      await auth.verifyCredentials();
+      logger.info({ appId: process.env.GITHUB_APP_ID }, 'GitHub App credentials verified');
+    } catch (authError) {
+      logger.warn({ error: authError.message }, 'GitHub App credential verification failed - webhooks may not work until credentials are fixed');
+    }
 
     // Start server
     const port = process.env.PORT || 3000;
@@ -162,7 +166,7 @@ async function start() {
       logger.info('Health check: GET /health');
     });
   } catch (error) {
-    logger.fatal({ error }, 'Failed to start server');
+    logger.fatal({ error: error.message, stack: error.stack }, 'Failed to start server');
     process.exit(1);
   }
 }
