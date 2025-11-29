@@ -31,6 +31,18 @@
       position: relative;
     }
 
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
 
     .container {
       max-width: 1200px;
@@ -43,8 +55,12 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
-      background: var(--surface);
+      background: rgba(22, 27, 34, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 10;
     }
 
     .logo {
@@ -99,48 +115,7 @@
     .hero {
       text-align: center;
       padding: 4rem 2rem;
-      background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
-      background-size: 30px 30px;
-      mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black, transparent);
-      -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black, transparent);
-      pointer-events: none;
-    }
-
-    .hero > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .features-section {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .features-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
-      background-size: 30px 30px;
-      mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent);
-      -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent);
-      pointer-events: none;
-    }
-
-    .features-section > * {
+      background: linear-gradient(180deg, rgba(22, 27, 34, 0.5) 0%, transparent 100%);
       position: relative;
       z-index: 1;
     }
@@ -356,8 +331,13 @@
       text-align: center;
       padding: 2rem;
       color: var(--text-muted);
+      background: rgba(22, 27, 34, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border);
       margin-top: 4rem;
+      position: relative;
+      z-index: 10;
     }
 
     @media (max-width: 768px) {
@@ -407,7 +387,7 @@
       </a>
     </section>
 
-    <section id="features" class="container features-section">
+    <section id="features" class="container">
       <div class="features">
         <div class="feature">
           <img src="/dependencies.svg" alt="" class="feature-icon">
