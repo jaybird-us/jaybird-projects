@@ -46,9 +46,9 @@
     }
 
     .logo {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
       text-decoration: none;
     }
 
@@ -57,9 +57,17 @@
     }
 
     .logo-badge {
-      font-size: 1.1rem;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      transform: translate(75%, 75%);
+      font-size: 0.65rem;
       font-weight: 600;
-      color: var(--accent);
+      color: #fff;
+      background: var(--accent);
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      white-space: nowrap;
     }
 
     nav a {
