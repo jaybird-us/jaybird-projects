@@ -36,8 +36,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+        repeating-linear-gradient(to right, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 6px),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 6px);
       background-size: 30px 30px;
       pointer-events: none;
       z-index: 0;
@@ -171,7 +171,9 @@
     }
 
     .feature {
-      background: var(--surface);
+      background: rgba(22, 27, 34, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 1.5rem;
@@ -208,7 +210,9 @@
     }
 
     .pricing-card {
-      background: var(--surface);
+      background: rgba(22, 27, 34, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 2rem;
@@ -216,6 +220,9 @@
     }
 
     .pricing-card.featured {
+      background: var(--surface);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       border-color: var(--accent);
       position: relative;
     }
