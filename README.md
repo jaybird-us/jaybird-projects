@@ -1,4 +1,4 @@
-# jayBird Projects - MS Project for GitHub
+# jayBird Projects - Professional Scheduling for GitHub
 
 > Automatic date calculations, dependency tracking, baseline comparisons, and variance analysis for GitHub Projects.
 
@@ -198,18 +198,16 @@ PUT /api/installations/:id/settings
 | **Pro** | $9/mo | Unlimited, baselines, reports |
 | **Enterprise** | $49/mo | Multiple projects, API, SSO |
 
-## Compared to MS Project
+## Features Comparison
 
-| Feature | MS Project | jayBird Projects |
-|---------|------------|------------------|
-| Dependencies | Yes | Yes (GitHub blocking) |
-| Working days | Yes | Yes |
-| Baselines | Yes | Yes |
-| % Complete | Yes | Yes |
-| Critical Path | Yes | Coming soon |
-| Gantt Chart | Yes | Coming soon (via Mermaid) |
-| Resource Leveling | Yes | Not planned |
-| Cost Tracking | Yes | Not planned |
+| Feature | jayBird Projects |
+|---------|------------------|
+| Dependencies | Yes (GitHub blocking) |
+| Working days | Yes |
+| Baselines | Yes |
+| % Complete | Yes |
+| Critical Path | Coming soon |
+| Gantt Chart | Coming soon (via Mermaid) |
 
 ## Support
 

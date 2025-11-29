@@ -1,7 +1,7 @@
 {
   "name": "jaybird-projects",
   "version": "1.0.0",
-  "description": "MS Project-style scheduling for GitHub Projects - automatic date calculations, dependencies, baselines, and variance tracking",
+  "description": "Professional scheduling for GitHub Projects - automatic date calculations, dependencies, baselines, and variance tracking",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
@@ -15,7 +15,7 @@
     "github-app",
     "project-management",
     "scheduling",
-    "ms-project",
+    "project-scheduling",
     "dependencies",
     "gantt"
   ],

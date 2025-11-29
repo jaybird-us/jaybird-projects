@@ -1,5 +1,5 @@
 /**
- * jayBird Projects - MS Project-style scheduling for GitHub Projects
+ * jayBird Projects - Professional scheduling for GitHub Projects
  *
  * A GitHub App by jayBird (https://jaybird.us)
  * Created by Jeremy Paxton (@jeremy-paxton)
