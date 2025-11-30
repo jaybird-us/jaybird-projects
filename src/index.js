@@ -170,9 +170,15 @@ app.post('/api/admin/seed-project', async (req, res) => {
 // Manual trigger endpoints
 app.post('/api/installations/:installationId/recalculate', async (req, res) => {
   try {
+    const { owner, projectNumber } = req.body;
+
+    if (!owner || !projectNumber) {
+      return res.status(400).json({ error: 'Missing required fields: owner, projectNumber' });
+    }
+
     const { ProjectFlowEngine } = await import('./lib/engine.js');
     const engine = new ProjectFlowEngine(parseInt(req.params.installationId), logger);
-    await engine.recalculateAll();
+    await engine.recalculateAll(owner, parseInt(projectNumber));
     res.json({ success: true, message: 'Recalculation complete' });
   } catch (error) {
     logger.error({ error }, 'Failed to recalculate');
@@ -182,9 +188,15 @@ app.post('/api/installations/:installationId/recalculate', async (req, res) => {
 
 app.post('/api/installations/:installationId/save-baseline', async (req, res) => {
   try {
+    const { owner, projectNumber } = req.body;
+
+    if (!owner || !projectNumber) {
+      return res.status(400).json({ error: 'Missing required fields: owner, projectNumber' });
+    }
+
     const { ProjectFlowEngine } = await import('./lib/engine.js');
     const engine = new ProjectFlowEngine(parseInt(req.params.installationId), logger);
-    const result = await engine.saveBaseline();
+    const result = await engine.saveBaseline(owner, parseInt(projectNumber));
     res.json({ success: true, saved: result.saved });
   } catch (error) {
     logger.error({ error }, 'Failed to save baseline');
@@ -194,9 +206,15 @@ app.post('/api/installations/:installationId/save-baseline', async (req, res) =>
 
 app.get('/api/installations/:installationId/variance-report', async (req, res) => {
   try {
+    const { owner, projectNumber } = req.query;
+
+    if (!owner || !projectNumber) {
+      return res.status(400).json({ error: 'Missing required query params: owner, projectNumber' });
+    }
+
     const { ProjectFlowEngine } = await import('./lib/engine.js');
     const engine = new ProjectFlowEngine(parseInt(req.params.installationId), logger);
-    const report = await engine.generateVarianceReport();
+    const report = await engine.generateVarianceReport(owner, parseInt(projectNumber));
     res.json(report);
   } catch (error) {
     logger.error({ error }, 'Failed to generate variance report');
