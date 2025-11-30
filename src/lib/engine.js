@@ -95,9 +95,10 @@ class DateUtils {
 // ============================================================
 
 export class ProjectFlowEngine {
-  constructor(installationId, logger) {
+  constructor(installationId, logger, options = {}) {
     this.installationId = installationId;
     this.logger = logger;
+    this.maxTrackedIssues = options.maxTrackedIssues || Infinity;
     this.octokit = null;
     this.settings = null;
     this.dateUtils = null;
@@ -106,6 +107,8 @@ export class ProjectFlowEngine {
     this.parentChildren = new Map();
     this.milestoneEpics = new Map();
     this.calculatedDates = new Map();
+    this.limitReached = false;
+    this.totalItemsFound = 0;
   }
 
   async initialize() {
@@ -196,12 +199,28 @@ export class ProjectFlowEngine {
     });
 
     const items = result.organization?.projectV2?.items?.nodes || [];
+    this.totalItemsFound = items.length;
+    this.limitReached = items.length > this.maxTrackedIssues;
+
+    // Apply limit for free tier
+    const itemsToProcess = this.maxTrackedIssues < Infinity
+      ? items.slice(0, this.maxTrackedIssues)
+      : items;
+
+    if (this.limitReached) {
+      this.logger.warn({
+        total: items.length,
+        limit: this.maxTrackedIssues,
+        processing: itemsToProcess.length
+      }, 'Issue limit reached - upgrade to Pro for unlimited tracking');
+    }
+
     this.projectItems.clear();
     this.issueDependencies.clear();
     this.parentChildren.clear();
     this.milestoneEpics.clear();
 
-    for (const item of items) {
+    for (const item of itemsToProcess) {
       if (!item.content?.number) continue;
 
       const issueNumber = item.content.number;

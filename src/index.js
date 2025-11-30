@@ -170,16 +170,30 @@ app.post('/api/admin/seed-project', async (req, res) => {
 // Manual trigger endpoints
 app.post('/api/installations/:installationId/recalculate', async (req, res) => {
   try {
+    const { getInstallationSettings } = await import('./lib/database.js');
+    const installationId = parseInt(req.params.installationId);
     const { owner, projectNumber } = req.body;
 
     if (!owner || !projectNumber) {
       return res.status(400).json({ error: 'Missing required fields: owner, projectNumber' });
     }
 
+    // Get subscription to determine issue limit
+    const settings = getInstallationSettings(installationId);
+    const subscription = await getSubscriptionStatus(settings?.stripeCustomerId);
+    const maxTrackedIssues = PLAN_FEATURES[subscription.plan].maxTrackedIssues;
+
     const { ProjectFlowEngine } = await import('./lib/engine.js');
-    const engine = new ProjectFlowEngine(parseInt(req.params.installationId), logger);
+    const engine = new ProjectFlowEngine(installationId, logger, { maxTrackedIssues });
     await engine.recalculateAll(owner, parseInt(projectNumber));
-    res.json({ success: true, message: 'Recalculation complete' });
+
+    res.json({
+      success: true,
+      message: 'Recalculation complete',
+      limitReached: engine.limitReached,
+      totalItems: engine.totalItemsFound,
+      processedItems: engine.projectItems.size
+    });
   } catch (error) {
     logger.error({ error }, 'Failed to recalculate');
     res.status(500).json({ error: error.message });
@@ -188,14 +202,30 @@ app.post('/api/installations/:installationId/recalculate', async (req, res) => {
 
 app.post('/api/installations/:installationId/save-baseline', async (req, res) => {
   try {
-    const { owner, projectNumber } = req.body;
+    const { getInstallationSettings } = await import('./lib/database.js');
+    const installationId = parseInt(req.params.installationId);
 
+    // Check subscription - baselines require Pro
+    const settings = getInstallationSettings(installationId);
+    if (!settings) {
+      return res.status(404).json({ error: 'Installation not found' });
+    }
+
+    const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
+    if (subscription.plan !== 'pro') {
+      return res.status(403).json({
+        error: 'Baseline tracking requires a Pro subscription',
+        upgrade: true
+      });
+    }
+
+    const { owner, projectNumber } = req.body;
     if (!owner || !projectNumber) {
       return res.status(400).json({ error: 'Missing required fields: owner, projectNumber' });
     }
 
     const { ProjectFlowEngine } = await import('./lib/engine.js');
-    const engine = new ProjectFlowEngine(parseInt(req.params.installationId), logger);
+    const engine = new ProjectFlowEngine(installationId, logger);
     const result = await engine.saveBaseline(owner, parseInt(projectNumber));
     res.json({ success: true, saved: result.saved });
   } catch (error) {
@@ -206,14 +236,30 @@ app.post('/api/installations/:installationId/save-baseline', async (req, res) =>
 
 app.get('/api/installations/:installationId/variance-report', async (req, res) => {
   try {
-    const { owner, projectNumber } = req.query;
+    const { getInstallationSettings } = await import('./lib/database.js');
+    const installationId = parseInt(req.params.installationId);
 
+    // Check subscription - variance reports require Pro
+    const settings = getInstallationSettings(installationId);
+    if (!settings) {
+      return res.status(404).json({ error: 'Installation not found' });
+    }
+
+    const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
+    if (subscription.plan !== 'pro') {
+      return res.status(403).json({
+        error: 'Variance reports require a Pro subscription',
+        upgrade: true
+      });
+    }
+
+    const { owner, projectNumber } = req.query;
     if (!owner || !projectNumber) {
       return res.status(400).json({ error: 'Missing required query params: owner, projectNumber' });
     }
 
     const { ProjectFlowEngine } = await import('./lib/engine.js');
-    const engine = new ProjectFlowEngine(parseInt(req.params.installationId), logger);
+    const engine = new ProjectFlowEngine(installationId, logger);
     const report = await engine.generateVarianceReport(owner, parseInt(projectNumber));
     res.json(report);
   } catch (error) {
@@ -380,7 +426,7 @@ app.delete('/api/installations/:installationId/holidays/:date', async (req, res)
 });
 
 // GitHub App setup callback (after installation)
-// New installs are auto-redirected to Stripe checkout for trial signup
+// New installs start on free tier - they can upgrade later
 app.get('/setup', async (req, res) => {
   const { installation_id, setup_action } = req.query;
 
@@ -388,39 +434,9 @@ app.get('/setup', async (req, res) => {
 
   if (setup_action === 'install' && installation_id) {
     const installationId = parseInt(installation_id);
-
-    try {
-      // Check if this installation already has an active subscription
-      const { getInstallationSettings } = await import('./lib/database.js');
-      const settings = getInstallationSettings(installationId);
-
-      // If they already have a subscription, go to settings
-      if (settings?.stripeCustomerId) {
-        const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
-        if (subscription.plan === 'pro') {
-          logger.info({ installationId }, 'Existing subscriber - redirecting to settings');
-          res.redirect('/settings.html?welcome=true');
-          return;
-        }
-      }
-
-      // New install or no subscription - redirect to Stripe checkout
-      const baseUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
-
-      const session = await createCheckoutSession({
-        installationId,
-        successUrl: `${baseUrl}/settings.html?checkout=success`,
-        cancelUrl: `${baseUrl}/settings.html?checkout=canceled`
-      });
-
-      logger.info({ installationId, sessionId: session.id }, 'Redirecting new install to Stripe checkout');
-      res.redirect(session.url);
-
-    } catch (error) {
-      logger.error({ error: error.message, installationId }, 'Failed to create checkout session');
-      // Fallback to settings page with error
-      res.redirect('/settings.html?error=checkout_failed');
-    }
+    logger.info({ installationId }, 'New installation - starting on free tier');
+    // Redirect to settings with welcome message
+    res.redirect(`/settings.html?installation_id=${installationId}&welcome=true`);
 
   } else if (setup_action === 'update') {
     // Permissions were updated

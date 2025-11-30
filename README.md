@@ -48,6 +48,14 @@ Install in seconds. See dates populate in minutes. No migration, no learning cur
 
 ---
 
+## Pricing
+
+**Free** — Up to 25 tracked issues with core scheduling features.
+
+**Pro ($9/month)** — Unlimited issues, baselines, variance reports, and custom holidays.
+
+---
+
 ## Support
 
 - Documentation: https://projects.jybrd.io

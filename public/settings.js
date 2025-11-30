@@ -89,8 +89,8 @@ async function loadInstallation(installationId) {
         tierBadge.className = 'tier-badge tier-pro';
       }
     } else {
-      tierBadge.textContent = 'No Subscription';
-      tierBadge.className = 'tier-badge tier-none';
+      tierBadge.textContent = 'Free';
+      tierBadge.className = 'tier-badge tier-free';
     }
 
     // Populate work days (invert weekendDays to get working days)
@@ -151,12 +151,12 @@ function updateSubscriptionUI(subscription) {
   trialBanner.style.display = 'none';
 
   if (subscription.plan === 'free' || !subscription.plan) {
-    // No subscription - show upgrade prompt
+    // Free tier - show what's included and upgrade prompt
     card.classList.add('no-subscription');
-    planEl.textContent = 'No Active Subscription';
-    detailsEl.textContent = 'Start your 14-day free trial to unlock all features. $9/month after trial ends.';
+    planEl.textContent = 'Free Plan';
+    detailsEl.innerHTML = 'Up to 25 tracked issues. <strong>Upgrade to Pro</strong> for unlimited issues, baselines, variance reports, and custom holidays.';
     upgradeBtn.style.display = 'inline-block';
-    upgradeBtn.textContent = 'Start 14-Day Free Trial';
+    upgradeBtn.textContent = 'Upgrade to Pro - $9/mo';
     manageBtn.style.display = 'none';
   } else if (subscription.plan === 'pro') {
     card.classList.add('pro-active');

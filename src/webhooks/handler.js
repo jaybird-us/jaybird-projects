@@ -9,11 +9,13 @@ import {
   createInstallation,
   deleteInstallation,
   getInstallation,
+  getInstallationSettings,
   createProject,
   updateSubscription,
   logAudit
 } from '../lib/database.js';
 import { ProjectFlowEngine } from '../lib/engine.js';
+import { getSubscriptionStatus, PLAN_FEATURES } from '../lib/stripe.js';
 
 /**
  * Verify webhook signature
@@ -87,10 +89,6 @@ async function processWebhook(event, payload, logger) {
 
     case 'projects_v2_item':
       await handleProjectItem(payload, logger);
-      break;
-
-    case 'marketplace_purchase':
-      await handleMarketplacePurchase(payload, logger);
       break;
 
     default:
@@ -194,7 +192,12 @@ async function handleIssues(payload, logger) {
   }, 'Issue event');
 
   try {
-    const engine = new ProjectFlowEngine(installationId, logger);
+    // Get subscription to determine issue limit
+    const settings = getInstallationSettings(installationId);
+    const subscription = await getSubscriptionStatus(settings?.stripeCustomerId);
+    const maxTrackedIssues = PLAN_FEATURES[subscription.plan].maxTrackedIssues;
+
+    const engine = new ProjectFlowEngine(installationId, logger, { maxTrackedIssues });
 
     switch (action) {
       case 'closed':
@@ -253,81 +256,17 @@ async function handleProjectItem(payload, logger) {
       logger.info({ fieldChanged }, 'Relevant field changed, triggering recalculation');
 
       try {
-        const engine = new ProjectFlowEngine(installation.id, logger);
+        // Get subscription to determine issue limit
+        const settings = getInstallationSettings(installation.id);
+        const subscription = await getSubscriptionStatus(settings?.stripeCustomerId);
+        const maxTrackedIssues = PLAN_FEATURES[subscription.plan].maxTrackedIssues;
+
+        const engine = new ProjectFlowEngine(installation.id, logger, { maxTrackedIssues });
         // Would need project details to recalculate
         // This is a simplified handler
       } catch (error) {
         logger.error({ error }, 'Failed to handle project item change');
       }
     }
-  }
-}
-
-/**
- * Handle marketplace purchase events (billing)
- */
-async function handleMarketplacePurchase(payload, logger) {
-  const { action, marketplace_purchase, sender } = payload;
-
-  logger.info({
-    action,
-    account: marketplace_purchase?.account?.login,
-    plan: marketplace_purchase?.plan?.name
-  }, 'Marketplace purchase event');
-
-  if (!marketplace_purchase?.account) return;
-
-  // Map plan names to tiers
-  const planToTier = {
-    'Free': 'free',
-    'Pro': 'pro',
-    'Enterprise': 'enterprise'
-  };
-
-  const tier = planToTier[marketplace_purchase.plan?.name] || 'free';
-
-  switch (action) {
-    case 'purchased':
-    case 'changed':
-      // Find installation by account
-      const installations = (await import('../lib/database.js')).getInstallations();
-      const installation = installations.find(
-        i => i.account_login === marketplace_purchase.account.login
-      );
-
-      if (installation) {
-        updateSubscription(
-          installation.installation_id,
-          tier,
-          'active',
-          marketplace_purchase.next_billing_date
-        );
-
-        logAudit(installation.installation_id, `marketplace.${action}`, {
-          plan: marketplace_purchase.plan?.name,
-          tier
-        });
-      }
-      break;
-
-    case 'cancelled':
-      const allInstallations = (await import('../lib/database.js')).getInstallations();
-      const cancelledInstallation = allInstallations.find(
-        i => i.account_login === marketplace_purchase.account.login
-      );
-
-      if (cancelledInstallation) {
-        updateSubscription(
-          cancelledInstallation.installation_id,
-          'free',
-          'cancelled',
-          null
-        );
-
-        logAudit(cancelledInstallation.installation_id, 'marketplace.cancelled', {
-          previousPlan: marketplace_purchase.plan?.name
-        });
-      }
-      break;
   }
 }

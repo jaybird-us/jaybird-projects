@@ -363,19 +363,6 @@ export function getSubscription(installationId) {
   return stmt.get(installationId);
 }
 
-export function isWithinTierLimits(installationId, issueCount) {
-  const subscription = getSubscription(installationId);
-  if (!subscription) return false;
-
-  const limits = {
-    free: parseInt(process.env.FREE_TIER_MAX_ISSUES || '50'),
-    pro: Infinity,
-    enterprise: Infinity
-  };
-
-  return issueCount <= (limits[subscription.tier] || limits.free);
-}
-
 /**
  * Update installation subscription from Stripe webhook
  */
