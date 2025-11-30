@@ -7,6 +7,17 @@ let hasChanges = false;
 // Initialize
 async function init() {
   try {
+    // Check for checkout result from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('checkout') === 'success') {
+      showToast('Subscription activated! Welcome to Pro.', 'success');
+      // Clean URL
+      window.history.replaceState({}, document.title, '/settings.html');
+    } else if (urlParams.get('checkout') === 'canceled') {
+      showToast('Checkout canceled', 'info');
+      window.history.replaceState({}, document.title, '/settings.html');
+    }
+
     const response = await fetch('/api/installations');
     const data = await response.json();
 
@@ -52,17 +63,26 @@ async function loadInstallation(installationId) {
   currentInstallationId = installationId;
 
   try {
-    // Load settings
-    const settingsRes = await fetch(`/api/installations/${installationId}/settings`);
+    // Load settings and subscription in parallel
+    const [settingsRes, subscriptionRes] = await Promise.all([
+      fetch(`/api/installations/${installationId}/settings`),
+      fetch(`/api/installations/${installationId}/subscription`)
+    ]);
+
     const settings = await settingsRes.json();
+    const subscription = await subscriptionRes.json();
 
     originalSettings = JSON.parse(JSON.stringify(settings));
     currentSettings = settings;
 
+    // Update subscription UI
+    updateSubscriptionUI(subscription);
+
     // Update tier badge
     const tierBadge = document.getElementById('tier-badge');
-    tierBadge.textContent = settings.tier.charAt(0).toUpperCase() + settings.tier.slice(1);
-    tierBadge.className = `tier-badge tier-${settings.tier}`;
+    const plan = subscription.plan || 'free';
+    tierBadge.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    tierBadge.className = `tier-badge tier-${plan}`;
 
     // Populate work days (invert weekendDays to get working days)
     const weekendDays = settings.weekendDays || [0, 6];
@@ -87,7 +107,7 @@ async function loadInstallation(installationId) {
 
     // Handle holidays (Pro+ only)
     const holidaysCard = document.getElementById('holidays-card');
-    if (settings.tier === 'free') {
+    if (subscription.plan === 'free') {
       holidaysCard.classList.add('locked');
     } else {
       holidaysCard.classList.remove('locked');
@@ -104,6 +124,93 @@ async function loadInstallation(installationId) {
   } catch (error) {
     console.error('Failed to load installation:', error);
     showToast('Failed to load settings', 'error');
+  }
+}
+
+function updateSubscriptionUI(subscription) {
+  const card = document.getElementById('subscription-card');
+  const planEl = document.getElementById('subscription-plan');
+  const detailsEl = document.getElementById('subscription-details');
+  const upgradeBtn = document.getElementById('btn-upgrade');
+  const manageBtn = document.getElementById('btn-manage');
+  const trialBanner = document.getElementById('trial-banner');
+  const trialDaysEl = document.getElementById('trial-days-left');
+
+  // Reset classes
+  card.classList.remove('pro-active');
+  trialBanner.style.display = 'none';
+
+  if (subscription.plan === 'free') {
+    planEl.textContent = 'Free Plan';
+    detailsEl.textContent = 'Limited to 50 tracked issues. Upgrade to Pro for unlimited issues and more features.';
+    upgradeBtn.style.display = 'inline-block';
+    upgradeBtn.textContent = 'Start 14-Day Free Trial';
+    manageBtn.style.display = 'none';
+  } else if (subscription.plan === 'pro') {
+    card.classList.add('pro-active');
+
+    if (subscription.trial) {
+      planEl.textContent = 'Pro Trial';
+      const daysLeft = Math.ceil((new Date(subscription.trialEnd) - new Date()) / (1000 * 60 * 60 * 24));
+      detailsEl.textContent = 'Full access to all Pro features during your trial.';
+      trialBanner.style.display = 'flex';
+      trialDaysEl.textContent = `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left in your trial`;
+      upgradeBtn.style.display = 'none';
+      manageBtn.style.display = 'inline-block';
+      manageBtn.textContent = 'Add Payment Method';
+    } else {
+      planEl.textContent = 'Pro Plan';
+      if (subscription.cancelAtPeriodEnd) {
+        const endDate = new Date(subscription.currentPeriodEnd).toLocaleDateString();
+        detailsEl.textContent = `Your subscription will end on ${endDate}. Reactivate to keep Pro features.`;
+      } else {
+        const renewDate = new Date(subscription.currentPeriodEnd).toLocaleDateString();
+        detailsEl.textContent = `Renews on ${renewDate}. Unlimited issues and all Pro features.`;
+      }
+      upgradeBtn.style.display = 'none';
+      manageBtn.style.display = 'inline-block';
+      manageBtn.textContent = 'Manage Subscription';
+    }
+  }
+}
+
+async function startCheckout() {
+  try {
+    const res = await fetch(`/api/installations/${currentInstallationId}/checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (res.ok) {
+      const { url } = await res.json();
+      window.location.href = url;
+    } else {
+      const error = await res.json();
+      showToast(error.error || 'Failed to start checkout', 'error');
+    }
+  } catch (error) {
+    console.error('Checkout error:', error);
+    showToast('Failed to start checkout', 'error');
+  }
+}
+
+async function openBillingPortal() {
+  try {
+    const res = await fetch(`/api/installations/${currentInstallationId}/portal`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (res.ok) {
+      const { url } = await res.json();
+      window.location.href = url;
+    } else {
+      const error = await res.json();
+      showToast(error.error || 'Failed to open billing portal', 'error');
+    }
+  } catch (error) {
+    console.error('Portal error:', error);
+    showToast('Failed to open billing portal', 'error');
   }
 }
 
@@ -304,6 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-reset').addEventListener('click', resetChanges);
   document.getElementById('btn-save').addEventListener('click', saveSettings);
   document.getElementById('btn-add-holiday').addEventListener('click', addHoliday);
+  document.getElementById('btn-upgrade').addEventListener('click', startCheckout);
+  document.getElementById('btn-manage').addEventListener('click', openBillingPortal);
 
   // Start
   init();

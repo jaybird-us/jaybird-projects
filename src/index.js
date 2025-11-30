@@ -26,8 +26,8 @@ import {
   getSubscriptionStatus,
   handleWebhookEvent,
   verifyWebhookSignature,
-  PRICE_IDS,
-  PLAN_LIMITS
+  PRICE_ID,
+  PLAN_FEATURES
 } from './lib/stripe.js';
 
 // Logger
@@ -225,8 +225,10 @@ app.get('/api/installations/:installationId/variance-report', async (req, res) =
 // Billing routes
 app.get('/api/billing/prices', (req, res) => {
   res.json({
-    prices: PRICE_IDS,
-    limits: PLAN_LIMITS
+    priceId: PRICE_ID,
+    features: PLAN_FEATURES,
+    price: 900, // $9.00 in cents
+    trialDays: 14
   });
 });
 
@@ -242,7 +244,7 @@ app.get('/api/installations/:installationId/subscription', async (req, res) => {
     const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
     res.json({
       ...subscription,
-      limits: PLAN_LIMITS[subscription.plan]
+      features: PLAN_FEATURES[subscription.plan]
     });
   } catch (error) {
     logger.error({ error }, 'Failed to get subscription');
@@ -252,17 +254,13 @@ app.get('/api/installations/:installationId/subscription', async (req, res) => {
 
 app.post('/api/installations/:installationId/checkout', async (req, res) => {
   try {
-    const { plan } = req.body;
     const installationId = parseInt(req.params.installationId);
-
-    const priceId = plan === 'enterprise' ? PRICE_IDS.enterprise : PRICE_IDS.pro;
     const baseUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
 
     const session = await createCheckoutSession({
       installationId,
-      priceId,
-      successUrl: `${baseUrl}/?checkout=success`,
-      cancelUrl: `${baseUrl}/?checkout=canceled`
+      successUrl: `${baseUrl}/settings.html?checkout=success`,
+      cancelUrl: `${baseUrl}/settings.html?checkout=canceled`
     });
 
     res.json({ url: session.url });

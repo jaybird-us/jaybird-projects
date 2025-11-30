@@ -1,5 +1,9 @@
 /**
  * Stripe integration for jayBird Projects
+ *
+ * Simplified single-plan model:
+ * - Free tier (no payment)
+ * - Pro: $9/mo with 14-day free trial, all features included
  */
 
 import Stripe from 'stripe';
@@ -7,48 +11,38 @@ import Stripe from 'stripe';
 // Initialize Stripe with secret key from environment
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Price IDs from Stripe (test mode)
-export const PRICE_IDS = {
-  pro: process.env.STRIPE_PRICE_PRO || 'price_1SYvesJeyZUKWlEySEAqxipB',
-  enterprise: process.env.STRIPE_PRICE_ENTERPRISE || 'price_1SYvifJeyZUKWlEyyTlKZrox'
-};
+// Single price ID - Pro plan with 14-day trial at $9/mo
+export const PRICE_ID = process.env.STRIPE_PRICE_ID || 'price_1SZ08dJeyZUKWlEyaAiGwMCv';
 
-// Plan limits
-export const PLAN_LIMITS = {
+// Plan features
+export const PLAN_FEATURES = {
   free: {
     maxTrackedIssues: 50,
     baseline: false,
     varianceReports: false,
-    customHolidays: false
+    customHolidays: false,
+    description: 'Basic scheduling for small projects'
   },
   pro: {
     maxTrackedIssues: Infinity,
     baseline: true,
     varianceReports: true,
-    customHolidays: true
-  },
-  enterprise: {
-    maxTrackedIssues: Infinity,
-    baseline: true,
-    varianceReports: true,
     customHolidays: true,
-    multipleProjects: true,
-    apiAccess: true,
-    auditLogs: true,
-    sso: true
+    description: 'Full-featured scheduling for teams'
   }
 };
 
 /**
  * Create a Stripe Checkout session for subscription
+ * Includes 14-day free trial automatically (configured on the price)
  */
-export async function createCheckoutSession({ installationId, priceId, successUrl, cancelUrl }) {
-  const session = await stripe.checkout.sessions.create({
+export async function createCheckoutSession({ installationId, successUrl, cancelUrl, customerEmail }) {
+  const sessionConfig = {
     mode: 'subscription',
     payment_method_types: ['card'],
     line_items: [
       {
-        price: priceId,
+        price: PRICE_ID,
         quantity: 1
       }
     ],
@@ -62,8 +56,14 @@ export async function createCheckoutSession({ installationId, priceId, successUr
         installationId: String(installationId)
       }
     }
-  });
+  };
 
+  // Pre-fill email if available
+  if (customerEmail) {
+    sessionConfig.customer_email = customerEmail;
+  }
+
+  const session = await stripe.checkout.sessions.create(sessionConfig);
   return session;
 }
 
@@ -81,37 +81,46 @@ export async function createPortalSession({ customerId, returnUrl }) {
 
 /**
  * Get subscription status for an installation
+ * Returns plan, status, trial info, and period end date
  */
 export async function getSubscriptionStatus(customerId) {
   if (!customerId) {
-    return { plan: 'free', status: 'active' };
+    return {
+      plan: 'free',
+      status: 'active',
+      trial: false,
+      trialEnd: null
+    };
   }
 
+  // Check for any subscriptions (active, trialing, or past_due)
   const subscriptions = await stripe.subscriptions.list({
     customer: customerId,
-    status: 'active',
-    limit: 1
+    limit: 1,
+    expand: ['data.default_payment_method']
   });
 
   if (subscriptions.data.length === 0) {
-    return { plan: 'free', status: 'active' };
+    return {
+      plan: 'free',
+      status: 'active',
+      trial: false,
+      trialEnd: null
+    };
   }
 
   const subscription = subscriptions.data[0];
-  const priceId = subscription.items.data[0]?.price.id;
-
-  let plan = 'free';
-  if (priceId === PRICE_IDS.pro) {
-    plan = 'pro';
-  } else if (priceId === PRICE_IDS.enterprise) {
-    plan = 'enterprise';
-  }
+  const isTrialing = subscription.status === 'trialing';
+  const trialEnd = subscription.trial_end ? new Date(subscription.trial_end * 1000) : null;
 
   return {
-    plan,
+    plan: 'pro',
     status: subscription.status,
+    trial: isTrialing,
+    trialEnd,
     currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-    cancelAtPeriodEnd: subscription.cancel_at_period_end
+    cancelAtPeriodEnd: subscription.cancel_at_period_end,
+    subscriptionId: subscription.id
   };
 }
 
@@ -133,7 +142,8 @@ export async function handleWebhookEvent(event, logger) {
         updateInstallationSubscription(parseInt(installationId), {
           stripeCustomerId: customerId,
           stripeSubscriptionId: subscriptionId,
-          plan: 'pro' // Will be updated by subscription.updated event
+          plan: 'pro',
+          subscriptionStatus: 'active'
         });
       }
       break;
@@ -143,20 +153,16 @@ export async function handleWebhookEvent(event, logger) {
     case 'customer.subscription.created': {
       const subscription = event.data.object;
       const installationId = subscription.metadata?.installationId;
-      const priceId = subscription.items.data[0]?.price.id;
-
-      let plan = 'free';
-      if (priceId === PRICE_IDS.pro) {
-        plan = 'pro';
-      } else if (priceId === PRICE_IDS.enterprise) {
-        plan = 'enterprise';
-      }
 
       if (installationId) {
-        logger.info({ installationId, plan, status: subscription.status }, 'Subscription updated');
+        const status = subscription.status;
+        // Pro plan if subscription exists and is active/trialing
+        const plan = ['active', 'trialing'].includes(status) ? 'pro' : 'free';
+
+        logger.info({ installationId, plan, status }, 'Subscription updated');
         updateInstallationSubscription(parseInt(installationId), {
           plan,
-          subscriptionStatus: subscription.status
+          subscriptionStatus: status
         });
       }
       break;
@@ -173,6 +179,14 @@ export async function handleWebhookEvent(event, logger) {
           subscriptionStatus: 'canceled'
         });
       }
+      break;
+    }
+
+    case 'customer.subscription.trial_will_end': {
+      // Trial ending in 3 days - could send notification
+      const subscription = event.data.object;
+      const installationId = subscription.metadata?.installationId;
+      logger.info({ installationId, trialEnd: subscription.trial_end }, 'Trial ending soon');
       break;
     }
 

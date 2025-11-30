@@ -274,6 +274,30 @@
       margin-right: 0.5rem;
     }
 
+    .pricing-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .pricing-grid-centered {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .pricing-note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+    }
+
+    .pricing-flow {
+      text-align: center;
+      color: var(--text-muted);
+      margin-top: 2rem;
+      font-size: 0.9rem;
+    }
+
     .dashboard {
       display: none;
     }
@@ -458,24 +482,25 @@
 
     <section id="pricing" class="container pricing">
       <h2>Simple, Transparent Pricing</h2>
-      <div class="pricing-grid">
+      <p class="pricing-subtitle">Try free for 14 days. No credit card required to install.</p>
+      <div class="pricing-grid pricing-grid-centered">
         <div class="pricing-card">
-          <h3>Free</h3>
+          <h3>Free Forever</h3>
           <div class="price">$0<span>/month</span></div>
           <ul>
             <li>Up to 50 tracked issues</li>
             <li>Automatic date calculations</li>
             <li>Dependency tracking</li>
             <li>Working day calendars</li>
-            <li>Community support</li>
+            <li>T-shirt sizing estimates</li>
           </ul>
           <a href="https://github.com/apps/jaybird-projects" class="btn btn-secondary">
-            Get Started
+            Get Started Free
           </a>
         </div>
         <div class="pricing-card featured">
           <h3>Pro</h3>
-          <div class="price">$9<span>/month</span></div>
+          <div class="price">$9<span>/month per org</span></div>
           <ul>
             <li>Unlimited tracked issues</li>
             <li>Everything in Free</li>
@@ -485,25 +510,14 @@
             <li>Priority support</li>
           </ul>
           <a href="https://github.com/apps/jaybird-projects" class="btn btn-primary">
-            Start Free Trial
+            Start 14-Day Free Trial
           </a>
-        </div>
-        <div class="pricing-card">
-          <h3>Enterprise</h3>
-          <div class="price">$49<span>/month</span></div>
-          <ul>
-            <li>Everything in Pro</li>
-            <li>Multiple projects</li>
-            <li>API access</li>
-            <li>Audit logs</li>
-            <li>SSO support</li>
-            <li>Dedicated support</li>
-          </ul>
-          <a href="mailto:support@jaybird.us" class="btn btn-secondary">
-            Contact Sales
-          </a>
+          <p class="pricing-note">Then $9/month. Cancel anytime.</p>
         </div>
       </div>
+      <p class="pricing-flow">
+        <strong>How it works:</strong> Install the GitHub App &rarr; Configure your settings &rarr; Start your Pro trial from the settings page
+      </p>
     </section>
   </main>
 

@@ -408,6 +408,58 @@
       margin-bottom: 2rem;
     }
 
+    .subscription-card {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(88, 166, 255, 0.1) 100%);
+      border-color: var(--accent);
+    }
+
+    .subscription-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .subscription-info h2 {
+      margin-bottom: 0.25rem;
+    }
+
+    .subscription-info p {
+      margin-bottom: 0;
+    }
+
+    .subscription-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .trial-banner {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(210, 153, 34, 0.15);
+      border: 1px solid var(--warning);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .trial-badge {
+      background: var(--warning);
+      color: #000;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .subscription-card.pro-active {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(63, 185, 80, 0.1) 100%);
+      border-color: var(--success);
+    }
+
     @media (max-width: 768px) {
       .add-holiday {
         grid-template-columns: 1fr;
@@ -454,6 +506,24 @@
         <select id="installation-select">
           <option value="">Select an organization...</option>
         </select>
+      </div>
+
+      <!-- Subscription Banner -->
+      <div class="card subscription-card" id="subscription-card">
+        <div class="subscription-status" id="subscription-status">
+          <div class="subscription-info">
+            <h2 id="subscription-plan">Free Plan</h2>
+            <p id="subscription-details">Limited to 50 tracked issues</p>
+          </div>
+          <div class="subscription-actions">
+            <button class="btn btn-primary" id="btn-upgrade" style="display: none;">Start 14-Day Free Trial</button>
+            <button class="btn btn-secondary" id="btn-manage" style="display: none;">Manage Subscription</button>
+          </div>
+        </div>
+        <div class="trial-banner" id="trial-banner" style="display: none;">
+          <span class="trial-badge">TRIAL</span>
+          <span id="trial-days-left">14 days left in your trial</span>
+        </div>
       </div>
 
       <!-- Work Schedule -->
