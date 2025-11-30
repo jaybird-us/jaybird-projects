@@ -150,19 +150,83 @@ app.post('/api/admin/seed-project', async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { installationId, owner, repo, projectNumber, projectId } = req.body;
+  const { installationId, owner, repo, projectNumber, projectId, setupFields = true } = req.body;
 
   if (!installationId || !owner || !projectNumber || !projectId) {
     return res.status(400).json({ error: 'Missing required fields: installationId, owner, projectNumber, projectId' });
   }
 
   try {
-    const { createProject } = await import('./lib/database.js');
+    const { createProject, getInstallationSettings } = await import('./lib/database.js');
     createProject(installationId, owner, repo || null, projectNumber, projectId);
     logger.info({ installationId, owner, projectNumber }, 'Project seeded via admin endpoint');
-    res.json({ success: true, installationId, owner, projectNumber });
+
+    // Auto-setup fields if requested
+    let fieldResult = null;
+    if (setupFields) {
+      const { getGitHubAuth } = await import('./lib/github-auth.js');
+      const { ensureProjectFields } = await import('./lib/project-fields.js');
+
+      const auth = getGitHubAuth();
+      const octokit = await auth.getInstallationOctokit(installationId);
+
+      // Check if Pro for additional fields
+      const settings = getInstallationSettings(installationId);
+      const subscription = await getSubscriptionStatus(settings?.stripeCustomerId);
+      const includePro = subscription.plan === 'pro';
+
+      fieldResult = await ensureProjectFields(octokit, projectId, logger, { includePro });
+    }
+
+    res.json({
+      success: true,
+      installationId,
+      owner,
+      projectNumber,
+      fields: fieldResult
+    });
   } catch (error) {
     logger.error({ error }, 'Failed to seed project');
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Setup project fields endpoint
+app.post('/api/installations/:installationId/projects/:projectId/setup-fields', async (req, res) => {
+  try {
+    const { getInstallationSettings, getProject } = await import('./lib/database.js');
+    const { getGitHubAuth } = await import('./lib/github-auth.js');
+    const { ensureProjectFields, REQUIRED_FIELDS } = await import('./lib/project-fields.js');
+
+    const installationId = parseInt(req.params.installationId);
+    const projectId = req.params.projectId;
+
+    // Get subscription to determine if Pro fields should be created
+    const settings = getInstallationSettings(installationId);
+    const subscription = await getSubscriptionStatus(settings?.stripeCustomerId);
+    const includePro = subscription.plan === 'pro';
+
+    // Get authenticated Octokit
+    const auth = getGitHubAuth();
+    const octokit = await auth.getInstallationOctokit(installationId);
+
+    // Ensure fields exist
+    const result = await ensureProjectFields(octokit, projectId, logger, { includePro });
+
+    logger.info({
+      installationId,
+      projectId,
+      created: result.createdFields,
+      existing: result.existingFields
+    }, 'Project fields setup complete');
+
+    res.json({
+      success: true,
+      ...result,
+      requiredFields: Object.keys(REQUIRED_FIELDS).filter(f => !REQUIRED_FIELDS[f].pro || includePro)
+    });
+  } catch (error) {
+    logger.error({ error }, 'Failed to setup project fields');
     res.status(500).json({ error: error.message });
   }
 });
@@ -170,18 +234,37 @@ app.post('/api/admin/seed-project', async (req, res) => {
 // Manual trigger endpoints
 app.post('/api/installations/:installationId/recalculate', async (req, res) => {
   try {
-    const { getInstallationSettings } = await import('./lib/database.js');
+    const { getInstallationSettings, getProject } = await import('./lib/database.js');
     const installationId = parseInt(req.params.installationId);
-    const { owner, projectNumber } = req.body;
+    const { owner, projectNumber, setupFields = true } = req.body;
 
     if (!owner || !projectNumber) {
       return res.status(400).json({ error: 'Missing required fields: owner, projectNumber' });
     }
 
-    // Get subscription to determine issue limit
+    // Get subscription to determine issue limit and Pro features
     const settings = getInstallationSettings(installationId);
     const subscription = await getSubscriptionStatus(settings?.stripeCustomerId);
     const maxTrackedIssues = PLAN_FEATURES[subscription.plan].maxTrackedIssues;
+    const includePro = subscription.plan === 'pro';
+
+    // Auto-setup fields if requested (default true)
+    let fieldResult = null;
+    if (setupFields) {
+      const project = getProject(installationId, owner, parseInt(projectNumber));
+      if (project?.project_id) {
+        const { getGitHubAuth } = await import('./lib/github-auth.js');
+        const { ensureProjectFields } = await import('./lib/project-fields.js');
+
+        const auth = getGitHubAuth();
+        const octokit = await auth.getInstallationOctokit(installationId);
+        fieldResult = await ensureProjectFields(octokit, project.project_id, logger, { includePro });
+
+        if (fieldResult.createdFields.length > 0) {
+          logger.info({ createdFields: fieldResult.createdFields }, 'Auto-created missing project fields');
+        }
+      }
+    }
 
     const { ProjectFlowEngine } = await import('./lib/engine.js');
     const engine = new ProjectFlowEngine(installationId, logger, { maxTrackedIssues });
@@ -192,7 +275,8 @@ app.post('/api/installations/:installationId/recalculate', async (req, res) => {
       message: 'Recalculation complete',
       limitReached: engine.limitReached,
       totalItems: engine.totalItemsFound,
-      processedItems: engine.projectItems.size
+      processedItems: engine.projectItems.size,
+      fieldsCreated: fieldResult?.createdFields || []
     });
   } catch (error) {
     logger.error({ error }, 'Failed to recalculate');
