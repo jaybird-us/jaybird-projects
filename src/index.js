@@ -113,6 +113,33 @@ app.put('/api/installations/:installationId/settings', async (req, res) => {
   }
 });
 
+// Admin endpoint to seed installations (for recovery after data loss)
+app.post('/api/admin/seed-installation', async (req, res) => {
+  // Simple shared secret auth
+  const adminSecret = process.env.ADMIN_SECRET;
+  const authHeader = req.headers.authorization;
+
+  if (!adminSecret || authHeader !== `Bearer ${adminSecret}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { installationId, accountLogin, accountType } = req.body;
+
+  if (!installationId || !accountLogin) {
+    return res.status(400).json({ error: 'Missing required fields: installationId, accountLogin' });
+  }
+
+  try {
+    const { createInstallation } = await import('./lib/database.js');
+    createInstallation(installationId, accountLogin, accountType || 'Organization');
+    logger.info({ installationId, accountLogin }, 'Installation seeded via admin endpoint');
+    res.json({ success: true, installationId, accountLogin });
+  } catch (error) {
+    logger.error({ error }, 'Failed to seed installation');
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Manual trigger endpoints
 app.post('/api/installations/:installationId/recalculate', async (req, res) => {
   try {
