@@ -14,21 +14,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 // Single price ID - Pro plan with 14-day trial at $9/mo
 export const PRICE_ID = process.env.STRIPE_PRICE_ID || 'price_1SZ08dJeyZUKWlEyaAiGwMCv';
 
-// Plan features
+// Plan features - 'free' represents no subscription (used internally)
 export const PLAN_FEATURES = {
   free: {
-    maxTrackedIssues: 50,
+    // No subscription state - limited/disabled features
+    maxTrackedIssues: 0,
     baseline: false,
     varianceReports: false,
     customHolidays: false,
-    description: 'Basic scheduling for small projects'
+    description: 'No active subscription'
   },
   pro: {
+    // Pro plan - all features enabled ($9/mo with 14-day trial)
     maxTrackedIssues: Infinity,
     baseline: true,
     varianceReports: true,
     customHolidays: true,
-    description: 'Full-featured scheduling for teams'
+    description: 'Professional scheduling - all features included'
   }
 };
 

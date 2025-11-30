@@ -274,15 +274,56 @@
       margin-right: 0.5rem;
     }
 
-    .pricing-subtitle {
+    .pricing-card-single {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 2.5rem;
       text-align: center;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
     }
 
-    .pricing-grid-centered {
-      max-width: 700px;
-      margin: 0 auto;
+    .pricing-card-single .price {
+      font-size: 3rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-card-single .price span {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .pricing-description {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .pricing-card-single ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem 2rem;
+      text-align: left;
+      margin: 1.5rem 0;
+    }
+
+    .pricing-card-single li {
+      padding: 0.5rem 0;
+      color: var(--text-muted);
+    }
+
+    .pricing-card-single li::before {
+      content: '✓';
+      color: var(--success);
+      margin-right: 0.5rem;
+    }
+
+    .btn-large {
+      padding: 1rem 2.5rem;
+      font-size: 1.1rem;
     }
 
     .pricing-note {
@@ -291,11 +332,10 @@
       margin-top: 1rem;
     }
 
-    .pricing-flow {
-      text-align: center;
-      color: var(--text-muted);
-      margin-top: 2rem;
-      font-size: 0.9rem;
+    @media (max-width: 600px) {
+      .pricing-card-single ul {
+        grid-template-columns: 1fr;
+      }
     }
 
     .dashboard {
@@ -419,8 +459,8 @@
         Automatic date calculations, dependency tracking, baseline comparisons,
         and variance analysis. All inside GitHub Projects.
       </p>
-      <a href="https://github.com/apps/jaybird-projects" class="btn btn-primary">
-        Install Free on GitHub
+      <a href="https://github.com/apps/jaybird-projects" class="btn btn-primary btn-large">
+        Start 14-Day Free Trial
       </a>
       <a href="#features" class="btn btn-secondary" style="margin-left: 1rem;">
         Learn More
@@ -482,42 +522,25 @@
 
     <section id="pricing" class="container pricing">
       <h2>Simple, Transparent Pricing</h2>
-      <p class="pricing-subtitle">Try free for 14 days. No credit card required to install.</p>
-      <div class="pricing-grid pricing-grid-centered">
-        <div class="pricing-card">
-          <h3>Free Forever</h3>
-          <div class="price">$0<span>/month</span></div>
-          <ul>
-            <li>Up to 50 tracked issues</li>
-            <li>Automatic date calculations</li>
-            <li>Dependency tracking</li>
-            <li>Working day calendars</li>
-            <li>T-shirt sizing estimates</li>
-          </ul>
-          <a href="https://github.com/apps/jaybird-projects" class="btn btn-secondary">
-            Get Started Free
-          </a>
-        </div>
-        <div class="pricing-card featured">
-          <h3>Pro</h3>
-          <div class="price">$9<span>/month per org</span></div>
-          <ul>
-            <li>Unlimited tracked issues</li>
-            <li>Everything in Free</li>
-            <li>Baseline tracking</li>
-            <li>Variance reports</li>
-            <li>Custom holidays</li>
-            <li>Priority support</li>
-          </ul>
-          <a href="https://github.com/apps/jaybird-projects" class="btn btn-primary">
-            Start 14-Day Free Trial
-          </a>
-          <p class="pricing-note">Then $9/month. Cancel anytime.</p>
-        </div>
+      <div class="pricing-card-single">
+        <div class="price">$9<span>/month per org</span></div>
+        <p class="pricing-description">Professional scheduling for GitHub Projects. All features included.</p>
+        <ul>
+          <li>Unlimited tracked issues</li>
+          <li>Automatic date calculations</li>
+          <li>Dependency tracking</li>
+          <li>Working day calendars</li>
+          <li>T-shirt sizing estimates</li>
+          <li>Baseline tracking</li>
+          <li>Variance reports</li>
+          <li>Custom holidays</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="https://github.com/apps/jaybird-projects" class="btn btn-primary btn-large">
+          Start 14-Day Free Trial
+        </a>
+        <p class="pricing-note">Credit card required. Cancel anytime.</p>
       </div>
-      <p class="pricing-flow">
-        <strong>How it works:</strong> Install the GitHub App &rarr; Configure your settings &rarr; Start your Pro trial from the settings page
-      </p>
     </section>
   </main>
 

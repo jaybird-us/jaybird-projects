@@ -113,10 +113,10 @@
       margin-left: 0.5rem;
     }
 
-    .tier-free {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
+    .tier-free, .tier-none {
+      background: rgba(248, 81, 73, 0.15);
+      border: 1px solid var(--danger);
+      color: var(--danger);
     }
 
     .tier-pro {
@@ -125,7 +125,7 @@
       color: var(--accent);
     }
 
-    .tier-enterprise {
+    .tier-trial {
       background: rgba(210, 153, 34, 0.2);
       border: 1px solid var(--warning);
       color: var(--warning);
@@ -460,6 +460,11 @@
       border-color: var(--success);
     }
 
+    .subscription-card.no-subscription {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(248, 81, 73, 0.1) 100%);
+      border-color: var(--danger);
+    }
+
     @media (max-width: 768px) {
       .add-holiday {
         grid-template-columns: 1fr;
@@ -497,7 +502,7 @@
     <div id="content" style="display: none;">
       <h1>
         Settings
-        <span id="tier-badge" class="tier-badge tier-free">Free</span>
+        <span id="tier-badge" class="tier-badge tier-none">Loading...</span>
       </h1>
       <p class="subtitle">Configure how jayBird Projects calculates dates for your organization.</p>
 
@@ -509,14 +514,14 @@
       </div>
 
       <!-- Subscription Banner -->
-      <div class="card subscription-card" id="subscription-card">
+      <div class="card subscription-card no-subscription" id="subscription-card">
         <div class="subscription-status" id="subscription-status">
           <div class="subscription-info">
-            <h2 id="subscription-plan">Free Plan</h2>
-            <p id="subscription-details">Limited to 50 tracked issues</p>
+            <h2 id="subscription-plan">No Active Subscription</h2>
+            <p id="subscription-details">Start your 14-day free trial to unlock all features.</p>
           </div>
           <div class="subscription-actions">
-            <button class="btn btn-primary" id="btn-upgrade" style="display: none;">Start 14-Day Free Trial</button>
+            <button class="btn btn-primary" id="btn-upgrade">Start 14-Day Free Trial</button>
             <button class="btn btn-secondary" id="btn-manage" style="display: none;">Manage Subscription</button>
           </div>
         </div>
@@ -615,12 +620,12 @@
 
       <!-- Custom Holidays -->
       <div class="card locked-overlay" id="holidays-card">
-        <h2>Custom Holidays <span class="pro-badge">PRO</span></h2>
+        <h2>Custom Holidays</h2>
         <p>Add company holidays and non-working days. These dates will be skipped when calculating target dates.</p>
 
         <div class="locked-message">
-          <p>Custom holidays require a Pro or Enterprise plan.</p>
-          <a href="/#pricing" class="btn btn-primary" style="margin-top: 1rem;">Upgrade Now</a>
+          <p>Custom holidays require an active subscription.</p>
+          <button class="btn btn-primary" id="btn-upgrade-holidays" onclick="startCheckout()" style="margin-top: 1rem;">Start 14-Day Free Trial</button>
         </div>
 
         <div id="holidays-content">

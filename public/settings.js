@@ -80,9 +80,18 @@ async function loadInstallation(installationId) {
 
     // Update tier badge
     const tierBadge = document.getElementById('tier-badge');
-    const plan = subscription.plan || 'free';
-    tierBadge.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-    tierBadge.className = `tier-badge tier-${plan}`;
+    if (subscription.plan === 'pro') {
+      if (subscription.trial) {
+        tierBadge.textContent = 'Trial';
+        tierBadge.className = 'tier-badge tier-trial';
+      } else {
+        tierBadge.textContent = 'Pro';
+        tierBadge.className = 'tier-badge tier-pro';
+      }
+    } else {
+      tierBadge.textContent = 'No Subscription';
+      tierBadge.className = 'tier-badge tier-none';
+    }
 
     // Populate work days (invert weekendDays to get working days)
     const weekendDays = settings.weekendDays || [0, 6];
@@ -105,9 +114,9 @@ async function loadInstallation(installationId) {
     document.getElementById('conf-medium').value = buffers['Medium'] || 2;
     document.getElementById('conf-low').value = buffers['Low'] || 5;
 
-    // Handle holidays (Pro+ only)
+    // Handle holidays (requires active subscription)
     const holidaysCard = document.getElementById('holidays-card');
-    if (subscription.plan === 'free') {
+    if (subscription.plan !== 'pro') {
       holidaysCard.classList.add('locked');
     } else {
       holidaysCard.classList.remove('locked');
@@ -138,11 +147,14 @@ function updateSubscriptionUI(subscription) {
 
   // Reset classes
   card.classList.remove('pro-active');
+  card.classList.remove('no-subscription');
   trialBanner.style.display = 'none';
 
-  if (subscription.plan === 'free') {
-    planEl.textContent = 'Free Plan';
-    detailsEl.textContent = 'Limited to 50 tracked issues. Upgrade to Pro for unlimited issues and more features.';
+  if (subscription.plan === 'free' || !subscription.plan) {
+    // No subscription - show upgrade prompt
+    card.classList.add('no-subscription');
+    planEl.textContent = 'No Active Subscription';
+    detailsEl.textContent = 'Start your 14-day free trial to unlock all features. $9/month after trial ends.';
     upgradeBtn.style.display = 'inline-block';
     upgradeBtn.textContent = 'Start 14-Day Free Trial';
     manageBtn.style.display = 'none';
@@ -150,22 +162,22 @@ function updateSubscriptionUI(subscription) {
     card.classList.add('pro-active');
 
     if (subscription.trial) {
-      planEl.textContent = 'Pro Trial';
+      planEl.textContent = 'Pro (Trial)';
       const daysLeft = Math.ceil((new Date(subscription.trialEnd) - new Date()) / (1000 * 60 * 60 * 24));
-      detailsEl.textContent = 'Full access to all Pro features during your trial.';
+      detailsEl.textContent = 'Full access to all features during your trial.';
       trialBanner.style.display = 'flex';
       trialDaysEl.textContent = `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left in your trial`;
       upgradeBtn.style.display = 'none';
       manageBtn.style.display = 'inline-block';
       manageBtn.textContent = 'Add Payment Method';
     } else {
-      planEl.textContent = 'Pro Plan';
+      planEl.textContent = 'Pro';
       if (subscription.cancelAtPeriodEnd) {
         const endDate = new Date(subscription.currentPeriodEnd).toLocaleDateString();
-        detailsEl.textContent = `Your subscription will end on ${endDate}. Reactivate to keep Pro features.`;
+        detailsEl.textContent = `Subscription ends ${endDate}. Reactivate to continue.`;
       } else {
         const renewDate = new Date(subscription.currentPeriodEnd).toLocaleDateString();
-        detailsEl.textContent = `Renews on ${renewDate}. Unlimited issues and all Pro features.`;
+        detailsEl.textContent = `Renews ${renewDate}. All features included.`;
       }
       upgradeBtn.style.display = 'none';
       manageBtn.style.display = 'inline-block';

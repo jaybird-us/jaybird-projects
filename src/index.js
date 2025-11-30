@@ -299,16 +299,19 @@ app.get('/api/installations/:installationId/holidays', async (req, res) => {
     const { getHolidays, getInstallationSettings } = await import('./lib/database.js');
     const installationId = parseInt(req.params.installationId);
 
-    // Check if user has access to custom holidays (Pro+ only)
     const settings = getInstallationSettings(installationId);
     if (!settings) {
       return res.status(404).json({ error: 'Installation not found' });
     }
 
+    // Check subscription status
+    const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
+    const hasActiveSubscription = subscription.plan === 'pro';
+
     const holidays = getHolidays(installationId);
     res.json({
       holidays,
-      canEdit: settings.tier !== 'free'
+      canEdit: hasActiveSubscription
     });
   } catch (error) {
     logger.error({ error }, 'Failed to get holidays');
@@ -321,13 +324,16 @@ app.post('/api/installations/:installationId/holidays', async (req, res) => {
     const { addHoliday, getInstallationSettings, logAudit } = await import('./lib/database.js');
     const installationId = parseInt(req.params.installationId);
 
-    // Check tier - custom holidays require Pro+
+    // Check subscription - custom holidays require active subscription
     const settings = getInstallationSettings(installationId);
     if (!settings) {
       return res.status(404).json({ error: 'Installation not found' });
     }
-    if (settings.tier === 'free') {
-      return res.status(403).json({ error: 'Custom holidays require Pro or Enterprise plan' });
+
+    // Check if user has active subscription
+    const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
+    if (subscription.plan !== 'pro') {
+      return res.status(403).json({ error: 'Custom holidays require an active subscription' });
     }
 
     const { date, name, recurring } = req.body;
@@ -350,13 +356,16 @@ app.delete('/api/installations/:installationId/holidays/:date', async (req, res)
     const { removeHoliday, getInstallationSettings, logAudit } = await import('./lib/database.js');
     const installationId = parseInt(req.params.installationId);
 
-    // Check tier
+    // Check subscription
     const settings = getInstallationSettings(installationId);
     if (!settings) {
       return res.status(404).json({ error: 'Installation not found' });
     }
-    if (settings.tier === 'free') {
-      return res.status(403).json({ error: 'Custom holidays require Pro or Enterprise plan' });
+
+    // Check if user has active subscription
+    const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
+    if (subscription.plan !== 'pro') {
+      return res.status(403).json({ error: 'Custom holidays require an active subscription' });
     }
 
     const date = req.params.date;
@@ -371,17 +380,51 @@ app.delete('/api/installations/:installationId/holidays/:date', async (req, res)
 });
 
 // GitHub App setup callback (after installation)
+// New installs are auto-redirected to Stripe checkout for trial signup
 app.get('/setup', async (req, res) => {
   const { installation_id, setup_action } = req.query;
 
   logger.info({ installation_id, setup_action }, 'Setup callback received');
 
   if (setup_action === 'install' && installation_id) {
-    // Installation was successful - redirect to success page
-    res.redirect(`/?installed=${installation_id}`);
+    const installationId = parseInt(installation_id);
+
+    try {
+      // Check if this installation already has an active subscription
+      const { getInstallationSettings } = await import('./lib/database.js');
+      const settings = getInstallationSettings(installationId);
+
+      // If they already have a subscription, go to settings
+      if (settings?.stripeCustomerId) {
+        const subscription = await getSubscriptionStatus(settings.stripeCustomerId);
+        if (subscription.plan === 'pro') {
+          logger.info({ installationId }, 'Existing subscriber - redirecting to settings');
+          res.redirect('/settings.html?welcome=true');
+          return;
+        }
+      }
+
+      // New install or no subscription - redirect to Stripe checkout
+      const baseUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
+
+      const session = await createCheckoutSession({
+        installationId,
+        successUrl: `${baseUrl}/settings.html?checkout=success`,
+        cancelUrl: `${baseUrl}/settings.html?checkout=canceled`
+      });
+
+      logger.info({ installationId, sessionId: session.id }, 'Redirecting new install to Stripe checkout');
+      res.redirect(session.url);
+
+    } catch (error) {
+      logger.error({ error: error.message, installationId }, 'Failed to create checkout session');
+      // Fallback to settings page with error
+      res.redirect('/settings.html?error=checkout_failed');
+    }
+
   } else if (setup_action === 'update') {
     // Permissions were updated
-    res.redirect('/?updated=true');
+    res.redirect('/settings.html?updated=true');
   } else {
     // Unknown action, redirect to home
     res.redirect('/');
