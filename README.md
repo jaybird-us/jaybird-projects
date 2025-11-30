@@ -52,7 +52,6 @@ Install in seconds. See dates populate in minutes. No migration, no learning cur
 
 - Documentation: https://projects.jybrd.io
 - Issues: https://github.com/jaybird-us/jaybird-projects/issues
-- Email: support@jaybird.us
 
 ---
 
