@@ -2,10 +2,10 @@
  * GitHub App Authentication
  *
  * Handles JWT generation and installation token management
+ * Updated for @octokit/app v14.x API
  */
 
 import { App } from '@octokit/app';
-import { Octokit } from '@octokit/rest';
 
 export class GitHubAppAuth {
   constructor() {
@@ -24,6 +24,7 @@ export class GitHubAppAuth {
     this.privateKey = privateKey;
 
     // Initialize the GitHub App
+    // In @octokit/app v14+, the App instance provides this.app.octokit for app-level auth
     this.app = new App({
       appId: this.appId,
       privateKey: this.privateKey,
@@ -35,19 +36,11 @@ export class GitHubAppAuth {
 
   /**
    * Verify that the app credentials are valid
+   * Uses this.app.octokit which is pre-authenticated as the GitHub App
    */
   async verifyCredentials() {
-    const octokit = await this.app.getInstallationOctokit(
-      // Use any installation to verify, or just check the app itself
-      undefined
-    ).catch(() => null);
-
-    // Try to get app info to verify credentials
-    const appOctokit = new Octokit({
-      auth: this.app.getSignedJsonWebToken(),
-    });
-
-    const { data: appInfo } = await appOctokit.apps.getAuthenticated();
+    // In @octokit/app v14+, use this.app.octokit for app-level API calls
+    const { data: appInfo } = await this.app.octokit.request('GET /app');
     return appInfo;
   }
 
@@ -69,14 +62,11 @@ export class GitHubAppAuth {
       return cached.token;
     }
 
-    // Get new token
-    const octokit = new Octokit({
-      auth: this.app.getSignedJsonWebToken(),
-    });
-
-    const { data } = await octokit.apps.createInstallationAccessToken({
-      installation_id: installationId,
-    });
+    // Use app.octokit for app-level API calls
+    const { data } = await this.app.octokit.request(
+      'POST /app/installations/{installation_id}/access_tokens',
+      { installation_id: installationId }
+    );
 
     // Cache the token
     this.tokenCache.set(installationId, {
@@ -91,11 +81,7 @@ export class GitHubAppAuth {
    * List all installations of this app
    */
   async listInstallations() {
-    const octokit = new Octokit({
-      auth: this.app.getSignedJsonWebToken(),
-    });
-
-    const { data } = await octokit.apps.listInstallations();
+    const { data } = await this.app.octokit.request('GET /app/installations');
     return data;
   }
 
@@ -103,13 +89,10 @@ export class GitHubAppAuth {
    * Get installation by ID
    */
   async getInstallation(installationId) {
-    const octokit = new Octokit({
-      auth: this.app.getSignedJsonWebToken(),
-    });
-
-    const { data } = await octokit.apps.getInstallation({
-      installation_id: installationId,
-    });
+    const { data } = await this.app.octokit.request(
+      'GET /app/installations/{installation_id}',
+      { installation_id: installationId }
+    );
     return data;
   }
 
@@ -118,7 +101,7 @@ export class GitHubAppAuth {
    */
   async getInstallationRepositories(installationId) {
     const octokit = await this.getInstallationOctokit(installationId);
-    const { data } = await octokit.apps.listReposAccessibleToInstallation();
+    const { data } = await octokit.request('GET /installation/repositories');
     return data.repositories;
   }
 }
