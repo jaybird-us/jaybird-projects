@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - jayBird Projects</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 140px;
+      text-decoration: none;
+    }
+
+    .logo img {
+      height: auto;
+      width: 100%;
+    }
+
+    .logo-badge {
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      background-image: linear-gradient(135deg, #d5caac, #fff3);
+      border: 1px solid #baa671;
+      border-radius: 100px;
+      align-self: flex-start;
+      margin-top: -4px;
+      margin-left: auto;
+      margin-right: -12px;
+      padding: 4px 8px 3px;
+      display: flex;
+      align-items: center;
+      height: 14px;
+    }
+
+    .logo-badge-text {
+      color: #fff;
+      letter-spacing: 1px;
+      mix-blend-mode: overlay;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 8px;
+      line-height: 8px;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 2rem;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+    }
+
+    .tier-free {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .tier-pro {
+      background: rgba(88, 166, 255, 0.2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .tier-enterprise {
+      background: rgba(210, 153, 34, 0.2);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .pro-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      background: rgba(88, 166, 255, 0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .checkbox-label:has(input:checked) {
+      border-color: var(--accent);
+      background: rgba(88, 166, 255, 0.1);
+    }
+
+    .checkbox-label input {
+      accent-color: var(--accent);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-muted);
+    }
+
+    .btn-danger {
+      background: rgba(248, 81, 73, 0.15);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: rgba(248, 81, 73, 0.25);
+    }
+
+    .btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+    }
+
+    .settings-grid label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .settings-grid input {
+      margin-top: 0.25rem;
+    }
+
+    .holiday-list {
+      margin-top: 1rem;
+    }
+
+    .holiday-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+
+    .holiday-item .name {
+      font-weight: 500;
+    }
+
+    .holiday-item .date {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .holiday-item .recurring {
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-left: 0.5rem;
+    }
+
+    .add-holiday {
+      display: grid;
+      grid-template-columns: 1fr 2fr auto auto;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      align-items: end;
+    }
+
+    .add-holiday .form-group {
+      margin-bottom: 0;
+    }
+
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      transform: translateY(100%);
+      transition: transform 0.3s;
+    }
+
+    .save-bar.visible {
+      transform: translateY(0);
+    }
+
+    .locked-overlay {
+      position: relative;
+    }
+
+    .locked-overlay.locked::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(13, 17, 23, 0.7);
+      border-radius: 8px;
+      cursor: not-allowed;
+    }
+
+    .locked-message {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+    }
+
+    .locked-overlay.locked .locked-message {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 80%;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 4rem;
+      color: var(--text-muted);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transform: translateY(200%);
+      transition: transform 0.3s;
+    }
+
+    .toast.visible {
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      border-color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+
+    .installation-select {
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .add-holiday {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      nav a {
+        margin: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">
+      <img src="/logo_dark.svg" alt="jayBird">
+      <div class="logo-badge">
+        <span class="logo-badge-text">PROJECTS</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/settings.html" style="color: var(--text);">Settings</a>
+      <a href="https://github.com/jaybird-us/jaybird-projects" target="_blank">Docs</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="loading" class="loading">Loading settings...</div>
+
+    <div id="content" style="display: none;">
+      <h1>
+        Settings
+        <span id="tier-badge" class="tier-badge tier-free">Free</span>
+      </h1>
+      <p class="subtitle">Configure how jayBird Projects calculates dates for your organization.</p>
+
+      <div class="installation-select" id="installation-select-container" style="display: none;">
+        <label for="installation-select">Organization</label>
+        <select id="installation-select">
+          <option value="">Select an organization...</option>
+        </select>
+      </div>
+
+      <!-- Work Schedule -->
+      <div class="card">
+        <h2>Work Schedule</h2>
+        <p>Define which days are working days. Dates will only be calculated using working days.</p>
+
+        <div class="form-group">
+          <label>Working Days</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="day-0" value="0"> Sun
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="day-1" value="1" checked> Mon
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="day-2" value="2" checked> Tue
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="day-3" value="3" checked> Wed
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="day-4" value="4" checked> Thu
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="day-5" value="5" checked> Fri
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="day-6" value="6"> Sat
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- T-Shirt Sizing -->
+      <div class="card">
+        <h2>T-Shirt Sizing</h2>
+        <p>Map estimate sizes to working days. These values are used when calculating target dates from the Estimate field.</p>
+
+        <div class="settings-grid">
+          <div class="form-group">
+            <label for="size-xs">XS</label>
+            <input type="number" id="size-xs" min="1" max="365" value="2">
+          </div>
+          <div class="form-group">
+            <label for="size-s">S</label>
+            <input type="number" id="size-s" min="1" max="365" value="5">
+          </div>
+          <div class="form-group">
+            <label for="size-m">M</label>
+            <input type="number" id="size-m" min="1" max="365" value="10">
+          </div>
+          <div class="form-group">
+            <label for="size-l">L</label>
+            <input type="number" id="size-l" min="1" max="365" value="15">
+          </div>
+          <div class="form-group">
+            <label for="size-xl">XL</label>
+            <input type="number" id="size-xl" min="1" max="365" value="25">
+          </div>
+          <div class="form-group">
+            <label for="size-xxl">XXL</label>
+            <input type="number" id="size-xxl" min="1" max="365" value="40">
+          </div>
+        </div>
+      </div>
+
+      <!-- Confidence Buffer -->
+      <div class="card">
+        <h2>Confidence Buffer</h2>
+        <p>Add buffer days based on confidence level. Higher risk items get more buffer time.</p>
+
+        <div class="settings-grid">
+          <div class="form-group">
+            <label for="conf-high">High Confidence</label>
+            <input type="number" id="conf-high" min="0" max="30" value="0">
+          </div>
+          <div class="form-group">
+            <label for="conf-medium">Medium Confidence</label>
+            <input type="number" id="conf-medium" min="0" max="30" value="2">
+          </div>
+          <div class="form-group">
+            <label for="conf-low">Low Confidence</label>
+            <input type="number" id="conf-low" min="0" max="30" value="5">
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom Holidays -->
+      <div class="card locked-overlay" id="holidays-card">
+        <h2>Custom Holidays <span class="pro-badge">PRO</span></h2>
+        <p>Add company holidays and non-working days. These dates will be skipped when calculating target dates.</p>
+
+        <div class="locked-message">
+          <p>Custom holidays require a Pro or Enterprise plan.</p>
+          <a href="/#pricing" class="btn btn-primary" style="margin-top: 1rem;">Upgrade Now</a>
+        </div>
+
+        <div id="holidays-content">
+          <div class="holiday-list" id="holiday-list">
+            <!-- Holidays will be populated here -->
+          </div>
+
+          <div class="add-holiday">
+            <div class="form-group">
+              <label for="holiday-date">Date</label>
+              <input type="date" id="holiday-date">
+            </div>
+            <div class="form-group">
+              <label for="holiday-name">Name (optional)</label>
+              <input type="text" id="holiday-name" placeholder="e.g., Company Holiday">
+            </div>
+            <div class="form-group">
+              <label class="checkbox-label" style="margin-top: 1.5rem;">
+                <input type="checkbox" id="holiday-recurring"> Recurring
+              </label>
+            </div>
+            <button class="btn btn-primary" onclick="addHoliday()" style="margin-top: 1.5rem;">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="save-bar" id="save-bar">
+    <button class="btn btn-secondary" onclick="resetChanges()">Reset</button>
+    <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentInstallationId = null;
+    let originalSettings = null;
+    let currentSettings = null;
+    let hasChanges = false;
+
+    // Initialize
+    async function init() {
+      try {
+        const response = await fetch('/api/installations');
+        const data = await response.json();
+
+        if (!data.installations || data.installations.length === 0) {
+          document.getElementById('loading').innerHTML = `
+            <p>No installations found.</p>
+            <p style="margin-top: 1rem;">
+              <a href="https://github.com/apps/jaybird-projects" class="btn btn-primary">Install jayBird Projects</a>
+            </p>
+          `;
+          return;
+        }
+
+        // If multiple installations, show selector
+        if (data.installations.length > 1) {
+          const select = document.getElementById('installation-select');
+          data.installations.forEach(inst => {
+            const option = document.createElement('option');
+            option.value = inst.installation_id;
+            option.textContent = inst.account_login;
+            select.appendChild(option);
+          });
+          document.getElementById('installation-select-container').style.display = 'block';
+          select.addEventListener('change', () => {
+            if (select.value) {
+              loadInstallation(parseInt(select.value));
+            }
+          });
+          // Load first installation
+          select.value = data.installations[0].installation_id;
+        }
+
+        // Load first installation
+        await loadInstallation(data.installations[0].installation_id);
+
+      } catch (error) {
+        console.error('Failed to load installations:', error);
+        document.getElementById('loading').innerHTML = 'Failed to load settings. Please try again.';
+      }
+    }
+
+    async function loadInstallation(installationId) {
+      currentInstallationId = installationId;
+
+      try {
+        // Load settings
+        const settingsRes = await fetch(`/api/installations/${installationId}/settings`);
+        const settings = await settingsRes.json();
+
+        originalSettings = JSON.parse(JSON.stringify(settings));
+        currentSettings = settings;
+
+        // Update tier badge
+        const tierBadge = document.getElementById('tier-badge');
+        tierBadge.textContent = settings.tier.charAt(0).toUpperCase() + settings.tier.slice(1);
+        tierBadge.className = `tier-badge tier-${settings.tier}`;
+
+        // Populate work days (invert weekendDays to get working days)
+        const weekendDays = settings.weekendDays || [0, 6];
+        for (let i = 0; i < 7; i++) {
+          document.getElementById(`day-${i}`).checked = !weekendDays.includes(i);
+        }
+
+        // Populate T-shirt sizes
+        const sizes = settings.estimateDays || {};
+        document.getElementById('size-xs').value = sizes['XS'] || 2;
+        document.getElementById('size-s').value = sizes['S'] || 5;
+        document.getElementById('size-m').value = sizes['M'] || 10;
+        document.getElementById('size-l').value = sizes['L'] || 15;
+        document.getElementById('size-xl').value = sizes['XL'] || 25;
+        document.getElementById('size-xxl').value = sizes['XXL'] || 40;
+
+        // Populate confidence buffers
+        const buffers = settings.confidenceBuffer || {};
+        document.getElementById('conf-high').value = buffers['High'] || 0;
+        document.getElementById('conf-medium').value = buffers['Medium'] || 2;
+        document.getElementById('conf-low').value = buffers['Low'] || 5;
+
+        // Handle holidays (Pro+ only)
+        const holidaysCard = document.getElementById('holidays-card');
+        if (settings.tier === 'free') {
+          holidaysCard.classList.add('locked');
+        } else {
+          holidaysCard.classList.remove('locked');
+          await loadHolidays();
+        }
+
+        // Show content
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+
+        // Add change listeners
+        addChangeListeners();
+
+      } catch (error) {
+        console.error('Failed to load installation:', error);
+        showToast('Failed to load settings', 'error');
+      }
+    }
+
+    async function loadHolidays() {
+      try {
+        const res = await fetch(`/api/installations/${currentInstallationId}/holidays`);
+        const data = await res.json();
+
+        const list = document.getElementById('holiday-list');
+        list.innerHTML = '';
+
+        if (data.holidays && data.holidays.length > 0) {
+          data.holidays.forEach(holiday => {
+            const item = document.createElement('div');
+            item.className = 'holiday-item';
+            item.innerHTML = `
+              <div>
+                <span class="name">${holiday.name || 'Holiday'}</span>
+                <span class="date">${formatDate(holiday.date)}</span>
+                ${holiday.recurring ? '<span class="recurring">Recurring</span>' : ''}
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="removeHoliday('${holiday.date}')">Remove</button>
+            `;
+            list.appendChild(item);
+          });
+        } else {
+          list.innerHTML = '<p style="color: var(--text-muted); padding: 1rem;">No holidays configured.</p>';
+        }
+      } catch (error) {
+        console.error('Failed to load holidays:', error);
+      }
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr + 'T00:00:00');
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function addChangeListeners() {
+      // Work days
+      for (let i = 0; i < 7; i++) {
+        document.getElementById(`day-${i}`).addEventListener('change', markChanged);
+      }
+
+      // T-shirt sizes
+      ['xs', 's', 'm', 'l', 'xl', 'xxl'].forEach(size => {
+        document.getElementById(`size-${size}`).addEventListener('input', markChanged);
+      });
+
+      // Confidence buffers
+      ['high', 'medium', 'low'].forEach(level => {
+        document.getElementById(`conf-${level}`).addEventListener('input', markChanged);
+      });
+    }
+
+    function markChanged() {
+      hasChanges = true;
+      document.getElementById('save-bar').classList.add('visible');
+    }
+
+    function resetChanges() {
+      loadInstallation(currentInstallationId);
+      hasChanges = false;
+      document.getElementById('save-bar').classList.remove('visible');
+    }
+
+    async function saveSettings() {
+      // Collect weekend days (inverse of working days)
+      const weekendDays = [];
+      for (let i = 0; i < 7; i++) {
+        if (!document.getElementById(`day-${i}`).checked) {
+          weekendDays.push(i);
+        }
+      }
+
+      // Collect T-shirt sizes
+      const estimateDays = {
+        'XS': parseInt(document.getElementById('size-xs').value) || 2,
+        'S': parseInt(document.getElementById('size-s').value) || 5,
+        'M': parseInt(document.getElementById('size-m').value) || 10,
+        'L': parseInt(document.getElementById('size-l').value) || 15,
+        'XL': parseInt(document.getElementById('size-xl').value) || 25,
+        'XXL': parseInt(document.getElementById('size-xxl').value) || 40
+      };
+
+      // Collect confidence buffers
+      const confidenceBuffer = {
+        'High': parseInt(document.getElementById('conf-high').value) || 0,
+        'Medium': parseInt(document.getElementById('conf-medium').value) || 2,
+        'Low': parseInt(document.getElementById('conf-low').value) || 5
+      };
+
+      const settings = {
+        weekendDays,
+        estimateDays,
+        confidenceBuffer
+      };
+
+      try {
+        const res = await fetch(`/api/installations/${currentInstallationId}/settings`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(settings)
+        });
+
+        if (res.ok) {
+          showToast('Settings saved successfully', 'success');
+          hasChanges = false;
+          document.getElementById('save-bar').classList.remove('visible');
+          originalSettings = { ...currentSettings, ...settings };
+        } else {
+          const error = await res.json();
+          showToast(error.error || 'Failed to save settings', 'error');
+        }
+      } catch (error) {
+        console.error('Failed to save settings:', error);
+        showToast('Failed to save settings', 'error');
+      }
+    }
+
+    async function addHoliday() {
+      const date = document.getElementById('holiday-date').value;
+      const name = document.getElementById('holiday-name').value;
+      const recurring = document.getElementById('holiday-recurring').checked;
+
+      if (!date) {
+        showToast('Please select a date', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/installations/${currentInstallationId}/holidays`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ date, name, recurring })
+        });
+
+        if (res.ok) {
+          showToast('Holiday added', 'success');
+          document.getElementById('holiday-date').value = '';
+          document.getElementById('holiday-name').value = '';
+          document.getElementById('holiday-recurring').checked = false;
+          await loadHolidays();
+        } else {
+          const error = await res.json();
+          showToast(error.error || 'Failed to add holiday', 'error');
+        }
+      } catch (error) {
+        console.error('Failed to add holiday:', error);
+        showToast('Failed to add holiday', 'error');
+      }
+    }
+
+    async function removeHoliday(date) {
+      if (!confirm('Remove this holiday?')) return;
+
+      try {
+        const res = await fetch(`/api/installations/${currentInstallationId}/holidays/${date}`, {
+          method: 'DELETE'
+        });
+
+        if (res.ok) {
+          showToast('Holiday removed', 'success');
+          await loadHolidays();
+        } else {
+          const error = await res.json();
+          showToast(error.error || 'Failed to remove holiday', 'error');
+        }
+      } catch (error) {
+        console.error('Failed to remove holiday:', error);
+        showToast('Failed to remove holiday', 'error');
+      }
+    }
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast visible ${type}`;
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3000);
+    }
+
+    // Warn before leaving with unsaved changes
+    window.addEventListener('beforeunload', (e) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
+
+    // Start
+    init();
+  </script>
+</body>
+</html>

@@ -295,6 +295,83 @@ app.post('/api/installations/:installationId/portal', async (req, res) => {
   }
 });
 
+// Holidays API endpoints
+app.get('/api/installations/:installationId/holidays', async (req, res) => {
+  try {
+    const { getHolidays, getInstallationSettings } = await import('./lib/database.js');
+    const installationId = parseInt(req.params.installationId);
+
+    // Check if user has access to custom holidays (Pro+ only)
+    const settings = getInstallationSettings(installationId);
+    if (!settings) {
+      return res.status(404).json({ error: 'Installation not found' });
+    }
+
+    const holidays = getHolidays(installationId);
+    res.json({
+      holidays,
+      canEdit: settings.tier !== 'free'
+    });
+  } catch (error) {
+    logger.error({ error }, 'Failed to get holidays');
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/installations/:installationId/holidays', async (req, res) => {
+  try {
+    const { addHoliday, getInstallationSettings, logAudit } = await import('./lib/database.js');
+    const installationId = parseInt(req.params.installationId);
+
+    // Check tier - custom holidays require Pro+
+    const settings = getInstallationSettings(installationId);
+    if (!settings) {
+      return res.status(404).json({ error: 'Installation not found' });
+    }
+    if (settings.tier === 'free') {
+      return res.status(403).json({ error: 'Custom holidays require Pro or Enterprise plan' });
+    }
+
+    const { date, name, recurring } = req.body;
+    if (!date) {
+      return res.status(400).json({ error: 'Date is required' });
+    }
+
+    addHoliday(installationId, date, name || '', recurring || false);
+    logAudit(installationId, 'holiday.added', { date, name, recurring });
+
+    res.json({ success: true });
+  } catch (error) {
+    logger.error({ error }, 'Failed to add holiday');
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/installations/:installationId/holidays/:date', async (req, res) => {
+  try {
+    const { removeHoliday, getInstallationSettings, logAudit } = await import('./lib/database.js');
+    const installationId = parseInt(req.params.installationId);
+
+    // Check tier
+    const settings = getInstallationSettings(installationId);
+    if (!settings) {
+      return res.status(404).json({ error: 'Installation not found' });
+    }
+    if (settings.tier === 'free') {
+      return res.status(403).json({ error: 'Custom holidays require Pro or Enterprise plan' });
+    }
+
+    const date = req.params.date;
+    removeHoliday(installationId, date);
+    logAudit(installationId, 'holiday.removed', { date });
+
+    res.json({ success: true });
+  } catch (error) {
+    logger.error({ error }, 'Failed to remove holiday');
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GitHub App setup callback (after installation)
 app.get('/setup', async (req, res) => {
   const { installation_id, setup_action } = req.query;
