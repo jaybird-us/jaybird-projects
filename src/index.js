@@ -140,6 +140,33 @@ app.post('/api/admin/seed-installation', async (req, res) => {
   }
 });
 
+// Admin endpoint to seed projects (for recovery after data loss)
+app.post('/api/admin/seed-project', async (req, res) => {
+  // Simple shared secret auth
+  const adminSecret = process.env.ADMIN_SECRET;
+  const authHeader = req.headers.authorization;
+
+  if (!adminSecret || authHeader !== `Bearer ${adminSecret}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { installationId, owner, repo, projectNumber, projectId } = req.body;
+
+  if (!installationId || !owner || !projectNumber || !projectId) {
+    return res.status(400).json({ error: 'Missing required fields: installationId, owner, projectNumber, projectId' });
+  }
+
+  try {
+    const { createProject } = await import('./lib/database.js');
+    createProject(installationId, owner, repo || null, projectNumber, projectId);
+    logger.info({ installationId, owner, projectNumber }, 'Project seeded via admin endpoint');
+    res.json({ success: true, installationId, owner, projectNumber });
+  } catch (error) {
+    logger.error({ error }, 'Failed to seed project');
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Manual trigger endpoints
 app.post('/api/installations/:installationId/recalculate', async (req, res) => {
   try {
