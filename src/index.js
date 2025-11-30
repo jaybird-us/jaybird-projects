@@ -223,6 +223,24 @@ app.post('/api/installations/:installationId/portal', async (req, res) => {
   }
 });
 
+// GitHub App setup callback (after installation)
+app.get('/setup', async (req, res) => {
+  const { installation_id, setup_action } = req.query;
+
+  logger.info({ installation_id, setup_action }, 'Setup callback received');
+
+  if (setup_action === 'install' && installation_id) {
+    // Installation was successful - redirect to success page
+    res.redirect(`/?installed=${installation_id}`);
+  } else if (setup_action === 'update') {
+    // Permissions were updated
+    res.redirect('/?updated=true');
+  } else {
+    // Unknown action, redirect to home
+    res.redirect('/');
+  }
+});
+
 // Serve static files for web UI
 if (process.env.ENABLE_WEB_UI !== 'false') {
   app.use(express.static('public'));
