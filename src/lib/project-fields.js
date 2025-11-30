@@ -115,8 +115,9 @@ async function createSingleSelectField(octokit, projectId, name, options) {
     }
   `;
 
-  const optionInputs = options.map((name, index) => ({
-    name,
+  const optionInputs = options.map((optionName, index) => ({
+    name: optionName,
+    description: optionName, // GitHub requires description
     color: getOptionColor(index)
   }));
 
