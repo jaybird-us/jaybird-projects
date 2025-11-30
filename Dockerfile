@@ -16,21 +16,19 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
-
 # Copy node_modules from builder
 COPY --from=builder /app/node_modules ./node_modules
 
 # Copy application code
-COPY --chown=nodejs:nodejs . .
+COPY . .
 
 # Create data directory for SQLite
-RUN mkdir -p /app/data && chown -R nodejs:nodejs /app/data
+# Note: Running as root for Railway volume mount compatibility
+RUN mkdir -p /app/data
 
-# Switch to non-root user
-USER nodejs
+# Copy and set up entrypoint script
+COPY docker-entrypoint.sh /app/
+RUN chmod +x /app/docker-entrypoint.sh
 
 # Expose port
 EXPOSE 3000
@@ -39,5 +37,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
 
-# Start server
-CMD ["node", "src/index.js"]
+# Start server via entrypoint
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
