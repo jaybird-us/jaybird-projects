@@ -20,7 +20,7 @@
     "gantt"
   ],
   "author": "jayBird",
-  "license": "MIT",
+  "license": "BSL-1.1",
   "dependencies": {
     "@octokit/app": "^14.0.0",
     "@octokit/auth-app": "^6.0.0",

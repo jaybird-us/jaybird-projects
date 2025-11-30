@@ -4,7 +4,7 @@
 
 **By [jayBird](https://jaybird.us) | Created by Jeremy Paxton ([@jeremy-paxton](https://github.com/jeremy-paxton))**
 
-![License](https://img.shields.io/badge/license-MIT-blue)
+![License](https://img.shields.io/badge/license-BSL--1.1-blue)
 ![Node](https://img.shields.io/badge/node-%3E%3D20-green)
 
 ## Features
@@ -192,11 +192,13 @@ PUT /api/installations/:id/settings
 
 ## Pricing
 
-| Tier | Price | Features |
-|------|-------|----------|
-| **Free** | $0/mo | 50 issues, basic features |
-| **Pro** | $9/mo | Unlimited, baselines, reports |
-| **Enterprise** | $49/mo | Multiple projects, API, SSO |
+**$9/month** with 14-day free trial. All features included:
+- Unlimited tracked issues
+- Automatic date calculations
+- Dependency tracking
+- Baseline tracking & variance reports
+- Custom holidays
+- Priority support
 
 ## Features Comparison
 
@@ -216,7 +218,9 @@ PUT /api/installations/:id/settings
 
 ## License
 
-MIT - jayBird
+Business Source License 1.1 - jayBird US LLC
+
+See [LICENSE](LICENSE) for details.
 
 ---
 
