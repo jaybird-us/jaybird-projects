@@ -79,9 +79,19 @@ const app = express();
 // Trust proxy for Railway/cloud deployments (required for rate limiting and secure cookies)
 app.set('trust proxy', 1);
 
-// Security middleware
+// Security middleware with CSP configured for Google Fonts
 app.use(helmet({
-  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "ajax.googleapis.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "fonts.googleapis.com"],
+      fontSrc: ["'self'", "fonts.gstatic.com", "data:"],
+      imgSrc: ["'self'", "data:", "https:", "*.githubusercontent.com"],
+      connectSrc: ["'self'", "api.github.com", "*.stripe.com"],
+      frameSrc: ["'self'", "*.stripe.com"],
+    },
+  } : false,
 }));
 
 // Validate required secrets in production
