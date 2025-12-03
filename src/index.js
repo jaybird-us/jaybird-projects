@@ -76,6 +76,9 @@ const logger = pino({
 // Express app
 const app = express();
 
+// Trust proxy for Railway/cloud deployments (required for rate limiting and secure cookies)
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
