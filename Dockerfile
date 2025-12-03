@@ -1,7 +1,25 @@
 # jayBird Projects GitHub App
 # Multi-stage build for minimal image size
 
-FROM node:20-alpine AS builder
+# Stage 1: Build the React client
+FROM node:20-alpine AS client-builder
+
+WORKDIR /app/client
+
+# Copy client package files
+COPY client/package*.json ./
+
+# Install client dependencies
+RUN npm install
+
+# Copy client source
+COPY client/ ./
+
+# Build client
+RUN npm run build
+
+# Stage 2: Build server dependencies
+FROM node:20-alpine AS server-builder
 
 # Install build dependencies for native modules (better-sqlite3)
 RUN apk add --no-cache python3 make g++
@@ -11,27 +29,31 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies only (skip postinstall since client folder isn't available)
+# Install production dependencies only (skip postinstall since client is built separately)
 # Then rebuild native modules
 RUN npm install --omit=dev --ignore-scripts && npm rebuild better-sqlite3
 
-# Production image
+# Stage 3: Production image
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy node_modules from builder
-COPY --from=builder /app/node_modules ./node_modules
+# Copy node_modules from server builder
+COPY --from=server-builder /app/node_modules ./node_modules
 
-# Copy application code
-COPY . .
+# Copy built client from client builder
+COPY --from=client-builder /app/client/dist ./public
+
+# Copy application code (server)
+COPY src/ ./src/
+COPY package*.json ./
+COPY docker-entrypoint.sh ./
 
 # Create data directory for SQLite
 # Note: Running as root for Railway volume mount compatibility
 RUN mkdir -p /app/data
 
-# Copy and set up entrypoint script
-COPY docker-entrypoint.sh /app/
+# Set up entrypoint script
 RUN chmod +x /app/docker-entrypoint.sh
 
 # Expose port
