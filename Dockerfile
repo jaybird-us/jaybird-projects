@@ -3,13 +3,17 @@
 
 FROM node:20-alpine AS builder
 
+# Install build dependencies for native modules (better-sqlite3)
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm install --omit=dev
+# Install production dependencies only (skip postinstall since client folder isn't available)
+# Then rebuild native modules
+RUN npm install --omit=dev --ignore-scripts && npm rebuild better-sqlite3
 
 # Production image
 FROM node:20-alpine

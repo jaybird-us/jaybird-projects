@@ -1,0 +1,242 @@
+/* Tiptap Editor Styles - Obsidian-like appearance */
+
+.markdown-editor-content {
+  height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  resize: vertical;
+}
+
+.markdown-editor-content .tiptap-editor {
+  min-height: 100%;
+  padding: 0.75rem;
+  outline: none;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.markdown-editor-content .tiptap-editor:focus {
+  outline: none;
+}
+
+/* Headings */
+.markdown-editor-content .tiptap-editor h1,
+.markdown-preview h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: hsl(var(--foreground));
+}
+
+.markdown-editor-content .tiptap-editor h2,
+.markdown-preview h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 0.875rem;
+  margin-bottom: 0.375rem;
+  color: hsl(var(--foreground));
+}
+
+.markdown-editor-content .tiptap-editor h3,
+.markdown-preview h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  color: hsl(var(--foreground));
+}
+
+/* First heading shouldn't have top margin */
+.markdown-editor-content .tiptap-editor > h1:first-child,
+.markdown-editor-content .tiptap-editor > h2:first-child,
+.markdown-editor-content .tiptap-editor > h3:first-child,
+.markdown-preview > h1:first-child,
+.markdown-preview > h2:first-child,
+.markdown-preview > h3:first-child {
+  margin-top: 0;
+}
+
+/* Paragraphs */
+.markdown-editor-content .tiptap-editor p,
+.markdown-preview p {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-editor-content .tiptap-editor p:last-child,
+.markdown-preview p:last-child {
+  margin-bottom: 0;
+}
+
+/* Bold and Italic */
+.markdown-editor-content .tiptap-editor strong,
+.markdown-preview strong {
+  font-weight: 600;
+}
+
+.markdown-editor-content .tiptap-editor em,
+.markdown-preview em {
+  font-style: italic;
+}
+
+/* Inline Code */
+.markdown-editor-content .tiptap-editor code:not(pre code),
+.markdown-preview code:not(pre code) {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+/* Code Blocks */
+.markdown-editor-content .tiptap-editor pre,
+.markdown-preview pre {
+  background-color: hsl(var(--muted) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.markdown-editor-content .tiptap-editor pre code,
+.markdown-preview pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
+}
+
+/* Blockquotes */
+.markdown-editor-content .tiptap-editor blockquote,
+.markdown-preview blockquote {
+  border-left: 4px solid hsl(var(--border));
+  background-color: hsl(var(--muted) / 0.3);
+  padding: 0.5rem 1rem;
+  margin: 0.5rem 0;
+  color: hsl(var(--muted-foreground));
+}
+
+.markdown-editor-content .tiptap-editor blockquote p,
+.markdown-preview blockquote p {
+  margin-bottom: 0;
+}
+
+/* Links */
+.markdown-editor-content .tiptap-editor a,
+.markdown-preview a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown-editor-content .tiptap-editor a:hover,
+.markdown-preview a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Bullet Lists */
+.markdown-editor-content .tiptap-editor ul,
+.markdown-preview ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.markdown-editor-content .tiptap-editor ul ul,
+.markdown-preview ul ul {
+  list-style-type: circle;
+  margin: 0;
+}
+
+.markdown-editor-content .tiptap-editor ul ul ul,
+.markdown-preview ul ul ul {
+  list-style-type: square;
+}
+
+/* Ordered Lists */
+.markdown-editor-content .tiptap-editor ol,
+.markdown-preview ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.markdown-editor-content .tiptap-editor ol ol,
+.markdown-preview ol ol {
+  list-style-type: lower-alpha;
+  margin: 0;
+}
+
+/* List Items */
+.markdown-editor-content .tiptap-editor li,
+.markdown-preview li {
+  margin: 0.125rem 0;
+}
+
+.markdown-editor-content .tiptap-editor li p,
+.markdown-preview li p {
+  margin-bottom: 0;
+}
+
+/* Task Lists - Tiptap uses ul[data-type="taskList"] */
+.markdown-editor-content .tiptap-editor ul[data-type="taskList"],
+.markdown-preview ul[data-type="taskList"] {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.markdown-editor-content .tiptap-editor ul[data-type="taskList"] li,
+.markdown-preview ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.markdown-editor-content .tiptap-editor ul[data-type="taskList"] li > label,
+.markdown-preview ul[data-type="taskList"] li > label {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.markdown-editor-content .tiptap-editor ul[data-type="taskList"] li > label input[type="checkbox"],
+.markdown-preview ul[data-type="taskList"] li > label input[type="checkbox"] {
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+  accent-color: hsl(var(--primary));
+}
+
+.markdown-editor-content .tiptap-editor ul[data-type="taskList"] li > div,
+.markdown-preview ul[data-type="taskList"] li > div {
+  flex: 1;
+}
+
+/* Checked task items */
+.markdown-editor-content .tiptap-editor ul[data-type="taskList"] li[data-checked="true"] > div,
+.markdown-preview ul[data-type="taskList"] li[data-checked="true"] > div {
+  text-decoration: line-through;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Horizontal Rule */
+.markdown-editor-content .tiptap-editor hr,
+.markdown-preview hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 1rem 0;
+}
+
+/* Preview mode styles */
+.markdown-preview {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}

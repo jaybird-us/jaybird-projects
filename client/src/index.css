@@ -1,0 +1,539 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@source "../node_modules/@jybrd/design-system";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.18 0.00002 271.152);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.00002 271.152);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.00002 271.152);
+  --primary: oklch(0.6027 0.1299 243.22);
+  --primary-foreground: oklch(0.97 0.01 254.61);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.21 0.00002 285.93);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.55 0.02 285.93);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.21 0.01 285.93);
+  --destructive: oklch(0.58 0.24 28.48);
+  --border: oklch(0.92 0 286.61);
+  --input: oklch(0.92 0 286.61);
+  --ring: oklch(0.6027 0.1299 243.22);
+  --chart-1: oklch(0.65 0.22 36.85);
+  --chart-2: oklch(0.6 0.11 184.15);
+  --chart-3: oklch(0.4 0.07 227.18);
+  --chart-4: oklch(0.83 0.17 81.03);
+  --chart-5: oklch(0.77 0.17 65.36);
+  --sidebar: oklch(100% 0.00011 271.152);
+  --sidebar-foreground: oklch(43.178% 0.07773 241.561);
+  --sidebar-primary: oklch(0.6027 0.1299 243.22);
+  --sidebar-primary-foreground: oklch(0.97 0.01 254.61);
+  --sidebar-accent: oklch(0.97 0.014 254.604);
+  --sidebar-accent-foreground: oklch(0.6027 0.1299 243.22);
+  --sidebar-border: oklch(0.92 0 286.61);
+  --sidebar-ring: oklch(0.6027 0.1299 243.22);
+
+  --font-sans: "Montserrat", sans-serif;
+  --font-serif: "Lora", serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-heading: var(--font-sans);
+
+  /* =====================================================
+   * macOS Typography System
+   * Based on Apple Human Interface Guidelines
+   * ===================================================== */
+
+  /* Text Styles - Size & Line Height (points → rem, 1pt = 0.0625rem) */
+  --text-large-title: 1.625rem; /* 26pt */
+  --leading-large-title: 2rem; /* 32pt */
+
+  --text-title-1: 1.375rem; /* 22pt */
+  --leading-title-1: 1.625rem; /* 26pt */
+
+  --text-title-2: 1.0625rem; /* 17pt */
+  --leading-title-2: 1.375rem; /* 22pt */
+
+  --text-title-3: 0.9375rem; /* 15pt */
+  --leading-title-3: 1.25rem; /* 20pt */
+
+  --text-headline: 0.8125rem; /* 13pt */
+  --leading-headline: 1rem; /* 16pt */
+
+  --text-body: 0.8125rem; /* 13pt */
+  --leading-body: 1rem; /* 16pt */
+
+  --text-callout: 0.75rem; /* 12pt */
+  --leading-callout: 0.9375rem; /* 15pt */
+
+  --text-subheadline: 0.6875rem; /* 11pt */
+  --leading-subheadline: 0.875rem; /* 14pt */
+
+  --text-footnote: 0.625rem; /* 10pt */
+  --leading-footnote: 0.8125rem; /* 13pt */
+
+  --text-caption-1: 0.625rem; /* 10pt */
+  --leading-caption-1: 0.8125rem; /* 13pt */
+
+  --text-caption-2: 0.625rem; /* 10pt */
+  --leading-caption-2: 0.8125rem; /* 13pt */
+
+  /* Legacy size aliases (map to closest macOS style) */
+  --text-xs: var(--text-caption-1);
+  --text-sm: var(--text-callout);
+  --text-base: var(--text-body);
+  --text-lg: var(--text-title-3);
+  --text-xl: var(--text-title-2);
+  --text-2xl: var(--text-title-1);
+  --text-3xl: var(--text-large-title);
+  --text-4xl: 2rem; /* Extended: 32pt */
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-heavy: 800;
+
+  /* Legacy weight aliases */
+  --font-weight-normal: var(--font-weight-regular);
+
+  /* Line Heights (generic) */
+  --leading-none: 1;
+  --leading-tight: 1.2;
+  --leading-snug: 1.25;
+  --leading-normal: 1.23; /* macOS default ratio */
+  --leading-relaxed: 1.4;
+  --leading-loose: 1.6;
+
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  --radius: 0.65rem;
+
+  --shadow-2xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
+  --shadow-xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0px oklch(0 0 0 / 0.1),
+    0 1px 2px -1px oklch(0 0 0 / 0.1);
+  --shadow: 0 1px 3px 0px oklch(0 0 0 / 0.1), 0 1px 2px -1px oklch(0 0 0 / 0.1);
+  --shadow-md: 0 1px 3px 0px oklch(0 0 0 / 0.1),
+    0 2px 4px -1px oklch(0 0 0 / 0.1);
+  --shadow-lg: 0 1px 3px 0px oklch(0 0 0 / 0.1),
+    0 4px 6px -1px oklch(0 0 0 / 0.1);
+  --shadow-xl: 0 1px 3px 0px oklch(0 0 0 / 0.1),
+    0 8px 10px -1px oklch(0 0 0 / 0.1);
+  --shadow-2xl: 0 1px 3px 0px oklch(0 0 0 / 0.25);
+
+  --spacing: 0.25rem;
+}
+
+.dark {
+  --background: oklch(17.542% 0.01029 285.272);
+  --foreground: oklch(0.99 0 0);
+  --card: oklch(0.21 0.01 285.93);
+  --card-foreground: oklch(0.99 0 0);
+  --popover: oklch(0.21 0.01 285.93);
+  --popover-foreground: oklch(0.99 0 0);
+  --primary: oklch(0.6027 0.1299 243.22);
+  --primary-foreground: oklch(0.97 0.01 254.61);
+  --secondary: oklch(0.27 0.01 286.1);
+  --secondary-foreground: oklch(0.99 0 0);
+  --muted: oklch(0.27 0.01 286.1);
+  --muted-foreground: oklch(0.71 0.01 286.09);
+  --accent: oklch(0.27 0.01 286.1);
+  --accent-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.7 0.19 22.23);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.49 0.24 264.4);
+  --chart-1: oklch(0.49 0.24 264.4);
+  --chart-2: oklch(0.7 0.16 160.43);
+  --chart-3: oklch(0.77 0.17 65.36);
+  --chart-4: oklch(0.62 0.26 305.32);
+  --chart-5: oklch(0.64 0.25 16.51);
+  --sidebar: oklch(0.21 0.01 285.93);
+  --sidebar-foreground: oklch(0.99 0 0);
+  --sidebar-primary: oklch(0.6027 0.1299 243.22);
+  --sidebar-primary-foreground: oklch(0.38 0.15 265.47);
+  --sidebar-accent: oklch(0.27 0.01 286.1);
+  --sidebar-accent-foreground: oklch(0.99 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.6027 0.1299 243.22);
+
+  --shadow-2xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
+  --shadow-xs: 0 1px 3px 0px oklch(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0px oklch(0 0 0 / 0.1),
+    0 1px 2px -1px oklch(0 0 0 / 0.1);
+  --shadow: 0 1px 3px 0px oklch(0 0 0 / 0.1), 0 1px 2px -1px oklch(0 0 0 / 0.1);
+  --shadow-md: 0 1px 3px 0px oklch(0 0 0 / 0.1),
+    0 2px 4px -1px oklch(0 0 0 / 0.1);
+  --shadow-lg: 0 1px 3px 0px oklch(0 0 0 / 0.1),
+    0 4px 6px -1px oklch(0 0 0 / 0.1);
+  --shadow-xl: 0 1px 3px 0px oklch(0 0 0 / 0.1),
+    0 8px 10px -1px oklch(0 0 0 / 0.1);
+  --shadow-2xl: 0 1px 3px 0px oklch(0 0 0 / 0.25);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  /* Typography - Line Heights */
+  --leading-none: var(--leading-none);
+  --leading-tight: var(--leading-tight);
+  --leading-snug: var(--leading-snug);
+  --leading-normal: var(--leading-normal);
+  --leading-relaxed: var(--leading-relaxed);
+  --leading-loose: var(--leading-loose);
+
+  /* Typography - Letter Spacing */
+  --tracking-tighter: var(--tracking-tighter);
+  --tracking-tight: var(--tracking-tight);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: var(--tracking-wide);
+  --tracking-wider: var(--tracking-wider);
+  --tracking-widest: var(--tracking-widest);
+
+  /* Typography - Legacy Font Sizes */
+  --text-xs: var(--text-xs);
+  --text-sm: var(--text-sm);
+  --text-base: var(--text-base);
+  --text-lg: var(--text-lg);
+  --text-xl: var(--text-xl);
+  --text-2xl: var(--text-2xl);
+  --text-3xl: var(--text-3xl);
+  --text-4xl: var(--text-4xl);
+
+  /* Typography - macOS Text Styles */
+  --text-large-title: var(--text-large-title);
+  --text-title-1: var(--text-title-1);
+  --text-title-2: var(--text-title-2);
+  --text-title-3: var(--text-title-3);
+  --text-headline: var(--text-headline);
+  --text-body: var(--text-body);
+  --text-callout: var(--text-callout);
+  --text-subheadline: var(--text-subheadline);
+  --text-footnote: var(--text-footnote);
+  --text-caption-1: var(--text-caption-1);
+  --text-caption-2: var(--text-caption-2);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+
+@keyframes collapsible-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-body);
+    letter-spacing: var(--tracking-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* macOS-style heading hierarchy */
+  h1 {
+    font-family: var(--font-heading);
+    font-size: var(--text-large-title);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-large-title);
+    letter-spacing: var(--tracking-tight);
+  }
+  h2 {
+    font-family: var(--font-heading);
+    font-size: var(--text-title-1);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-title-1);
+    letter-spacing: var(--tracking-tight);
+  }
+  h3 {
+    font-family: var(--font-heading);
+    font-size: var(--text-title-2);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-title-2);
+    letter-spacing: var(--tracking-tight);
+  }
+  h4 {
+    font-family: var(--font-heading);
+    font-size: var(--text-title-3);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-title-3);
+    letter-spacing: var(--tracking-tight);
+  }
+  h5 {
+    font-family: var(--font-heading);
+    font-size: var(--text-headline);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-headline);
+    letter-spacing: var(--tracking-normal);
+  }
+  h6 {
+    font-family: var(--font-heading);
+    font-size: var(--text-subheadline);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-subheadline);
+    letter-spacing: var(--tracking-normal);
+  }
+}
+
+/* =====================================================
+ * macOS Text Style Utility Classes
+ * Usage: class="text-style-headline" or "text-style-body"
+ * ===================================================== */
+@layer utilities {
+  .text-style-large-title {
+    font-size: var(--text-large-title);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-large-title);
+  }
+  .text-style-large-title-emphasized {
+    font-size: var(--text-large-title);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-large-title);
+  }
+
+  .text-style-title-1 {
+    font-size: var(--text-title-1);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-title-1);
+  }
+  .text-style-title-1-emphasized {
+    font-size: var(--text-title-1);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-title-1);
+  }
+
+  .text-style-title-2 {
+    font-size: var(--text-title-2);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-title-2);
+  }
+  .text-style-title-2-emphasized {
+    font-size: var(--text-title-2);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-title-2);
+  }
+
+  .text-style-title-3 {
+    font-size: var(--text-title-3);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-title-3);
+  }
+  .text-style-title-3-emphasized {
+    font-size: var(--text-title-3);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-title-3);
+  }
+
+  .text-style-headline {
+    font-size: var(--text-headline);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-headline);
+  }
+  .text-style-headline-emphasized {
+    font-size: var(--text-headline);
+    font-weight: var(--font-weight-heavy);
+    line-height: var(--leading-headline);
+  }
+
+  .text-style-body {
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-body);
+  }
+  .text-style-body-emphasized {
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-body);
+  }
+
+  .text-style-callout {
+    font-size: var(--text-callout);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-callout);
+  }
+  .text-style-callout-emphasized {
+    font-size: var(--text-callout);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-callout);
+  }
+
+  .text-style-subheadline {
+    font-size: var(--text-subheadline);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-subheadline);
+  }
+  .text-style-subheadline-emphasized {
+    font-size: var(--text-subheadline);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-subheadline);
+  }
+
+  .text-style-footnote {
+    font-size: var(--text-footnote);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-footnote);
+  }
+  .text-style-footnote-emphasized {
+    font-size: var(--text-footnote);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-footnote);
+  }
+
+  .text-style-caption-1 {
+    font-size: var(--text-caption-1);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--leading-caption-1);
+  }
+  .text-style-caption-1-emphasized {
+    font-size: var(--text-caption-1);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-caption-1);
+  }
+
+  .text-style-caption-2 {
+    font-size: var(--text-caption-2);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-caption-2);
+  }
+  .text-style-caption-2-emphasized {
+    font-size: var(--text-caption-2);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-caption-2);
+  }
+}
+
+/* Prose styles for rendered HTML content */
+.prose-content {
+  line-height: 1.6;
+}
+
+.prose-content p {
+  margin-bottom: 0.75em;
+}
+
+.prose-content p:last-child {
+  margin-bottom: 0;
+}
+
+.prose-content strong {
+  font-weight: 600;
+}
+
+.prose-content em {
+  font-style: italic;
+}
+
+.prose-content ul,
+.prose-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75em;
+}
+
+.prose-content ul {
+  list-style-type: disc;
+}
+
+.prose-content ol {
+  list-style-type: decimal;
+}
+
+.prose-content li {
+  margin-bottom: 0.25em;
+}
+
+.prose-content blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  margin-left: 0;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+
+.prose-content a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.prose-content a:hover {
+  text-decoration: none;
+}

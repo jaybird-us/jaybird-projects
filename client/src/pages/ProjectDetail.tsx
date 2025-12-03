@@ -49,6 +49,7 @@ import {
   User,
   Stack,
   GitCommit,
+  GitPullRequest,
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { PageLoadingCover } from '@/components/ui/page-loading-cover';
@@ -117,10 +118,12 @@ interface Risk {
   updated_at?: string;
 }
 
-interface Commit {
-  sha: string;
-  shortSha: string;
-  message: string;
+interface Activity {
+  type: 'commit' | 'pull_request';
+  id: string;
+  shortId?: string;
+  number?: number;
+  title: string;
   author: {
     login: string;
     name: string;
@@ -129,6 +132,9 @@ interface Commit {
   date: string;
   url: string;
   repository: string;
+  additions?: number;
+  deletions?: number;
+  changedFiles?: number;
 }
 
 // Status configuration with colors and descriptions
@@ -210,8 +216,8 @@ export function ProjectDetail() {
   const [newRiskSeverity, setNewRiskSeverity] = useState<Risk['severity']>('medium');
   const [newRiskOwner, setNewRiskOwner] = useState('');
 
-  // Commits state
-  const [commits, setCommits] = useState<Commit[]>([]);
+  // Activity state (commits + PRs)
+  const [activity, setActivity] = useState<Activity[]>([]);
 
   useEffect(() => {
     if (authLoading) return; // Wait for auth to complete
@@ -284,8 +290,8 @@ export function ProjectDetail() {
       }
 
       if (commitsRes?.ok) {
-        const commitsData = await commitsRes.json();
-        setCommits(commitsData.commits || []);
+        const activityData = await commitsRes.json();
+        setActivity(activityData.activity || []);
       }
     } catch (error) {
       console.error('Failed to fetch project:', error);
@@ -377,25 +383,46 @@ export function ProjectDetail() {
     ? Math.round((metrics.items.completed / Math.max(metrics.items.total, 1)) * 100)
     : 0;
 
-  // Transform commits to timeline items
+  // Transform activity to timeline items
   const timelineItems: TimelineItem[] = useMemo(() => {
-    return commits.map((commit) => ({
-      id: commit.sha,
-      title: commit.message,
-      description: commit.repository,
-      date: new Date(commit.date),
-      user: {
-        name: commit.author.name,
-        avatar: commit.author.avatarUrl,
-        initials: commit.author.name.slice(0, 2).toUpperCase(),
-      },
-      icon: <GitCommit className="h-4 w-4" weight="bold" />,
-      type: 'default' as const,
-      metadata: {
-        sha: commit.shortSha,
-      },
-    }));
-  }, [commits]);
+    return activity.map((item) => {
+      if (item.type === 'pull_request') {
+        return {
+          id: item.id,
+          title: item.title,
+          description: `#${item.number} merged`,
+          date: new Date(item.date),
+          user: {
+            name: item.author.name,
+            avatar: item.author.avatarUrl,
+            initials: item.author.name.slice(0, 2).toUpperCase(),
+          },
+          icon: <GitPullRequest className="h-4 w-4" weight="bold" />,
+          type: 'success' as const,
+          metadata: {
+            repo: item.repository.split('/')[1],
+          },
+        };
+      }
+      // Commit
+      return {
+        id: item.id,
+        title: item.title,
+        description: item.repository.split('/')[1],
+        date: new Date(item.date),
+        user: {
+          name: item.author.name,
+          avatar: item.author.avatarUrl,
+          initials: item.author.name.slice(0, 2).toUpperCase(),
+        },
+        icon: <GitCommit className="h-4 w-4" weight="bold" />,
+        type: 'default' as const,
+        metadata: {
+          sha: item.shortId,
+        },
+      };
+    });
+  }, [activity]);
 
   // Define columns for project items DataGrid
   const itemsColumns: DataGridColumn<ProjectItem>[] = useMemo(() => [
@@ -932,13 +959,13 @@ export function ProjectDetail() {
                       </CardContent>
                     </Card>
 
-                    {/* Commits Since Last Update */}
+                    {/* Activity Since Last Update */}
                     {timelineItems.length > 0 && (
                       <Card>
                         <CardHeader className="pb-2">
                           <CardTitle className="text-sm flex items-center gap-2">
-                            <GitCommit className="h-4 w-4" />
-                            Commits Since Last Update
+                            <Stack className="h-4 w-4" />
+                            Activity Since Last Update
                           </CardTitle>
                         </CardHeader>
                         <CardContent>

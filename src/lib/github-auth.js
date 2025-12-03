@@ -6,6 +6,7 @@
  */
 
 import { App } from '@octokit/app';
+import { LRUCache } from 'lru-cache';
 
 export class GitHubAppAuth {
   constructor() {
@@ -30,8 +31,13 @@ export class GitHubAppAuth {
       privateKey: this.privateKey,
     });
 
-    // Cache for installation tokens
-    this.tokenCache = new Map();
+    // LRU Cache for installation tokens with TTL
+    // Max 100 installations, tokens expire after 50 minutes (GitHub tokens last 60 min)
+    this.tokenCache = new LRUCache({
+      max: 100,
+      ttl: 50 * 60 * 1000, // 50 minutes
+      updateAgeOnGet: false,
+    });
   }
 
   /**
@@ -52,14 +58,13 @@ export class GitHubAppAuth {
   }
 
   /**
-   * Get installation access token (cached with auto-refresh)
+   * Get installation access token (cached with auto-refresh via LRU TTL)
    */
   async getInstallationToken(installationId) {
+    // LRU cache handles TTL automatically
     const cached = this.tokenCache.get(installationId);
-
-    // Return cached token if it's still valid (with 5 minute buffer)
-    if (cached && cached.expiresAt > Date.now() + 5 * 60 * 1000) {
-      return cached.token;
+    if (cached) {
+      return cached;
     }
 
     // Use app.octokit for app-level API calls
@@ -68,11 +73,8 @@ export class GitHubAppAuth {
       { installation_id: installationId }
     );
 
-    // Cache the token
-    this.tokenCache.set(installationId, {
-      token: data.token,
-      expiresAt: new Date(data.expires_at).getTime(),
-    });
+    // Cache the token (TTL is handled by LRU cache config)
+    this.tokenCache.set(installationId, data.token);
 
     return data.token;
   }

@@ -865,25 +865,27 @@ app.get('/api/installations/:installationId/projects/:projectNumber/commits', as
       sinceDate
     }, 'Fetching commits since last status update');
 
-    // Fetch commits from each accessible repository
-    const allCommits = [];
+    // Fetch commits and PRs from each accessible repository
+    const allActivity = [];
 
     for (const repoFullName of reposToFetch) {
       const [owner, repo] = repoFullName.split('/');
+
+      // Fetch commits
       try {
-        // Use installation token (App permissions) to get commits
         const { data: commits } = await installationOctokit.request('GET /repos/{owner}/{repo}/commits', {
           owner,
           repo,
           since: sinceDate,
-          per_page: 50
+          per_page: 30
         });
 
         for (const commit of commits) {
-          allCommits.push({
-            sha: commit.sha,
-            shortSha: commit.sha.substring(0, 7),
-            message: commit.commit.message.split('\n')[0], // First line only
+          allActivity.push({
+            type: 'commit',
+            id: commit.sha,
+            shortId: commit.sha.substring(0, 7),
+            title: commit.commit.message.split('\n')[0],
             author: {
               login: commit.author?.login || commit.commit.author?.name || 'Unknown',
               name: commit.commit.author?.name || commit.author?.login || 'Unknown',
@@ -895,20 +897,60 @@ app.get('/api/installations/:installationId/projects/:projectNumber/commits', as
           });
         }
       } catch (error) {
-        // Log but don't fail if one repo has issues
-        logger.warn({ error: error.message, stack: error.stack, repo: repoFullName }, 'Failed to fetch commits from repo');
+        logger.warn({ error: error.message, repo: repoFullName }, 'Failed to fetch commits');
+      }
+
+      // Fetch merged PRs
+      try {
+        const { data: pulls } = await installationOctokit.request('GET /repos/{owner}/{repo}/pulls', {
+          owner,
+          repo,
+          state: 'closed',
+          sort: 'updated',
+          direction: 'desc',
+          per_page: 30
+        });
+
+        for (const pr of pulls) {
+          // Only include PRs that were merged after sinceDate
+          if (pr.merged_at && new Date(pr.merged_at) >= new Date(sinceDate)) {
+            allActivity.push({
+              type: 'pull_request',
+              id: `pr-${pr.number}`,
+              number: pr.number,
+              title: pr.title,
+              author: {
+                login: pr.user?.login || 'Unknown',
+                name: pr.user?.login || 'Unknown',
+                avatarUrl: pr.user?.avatar_url
+              },
+              date: pr.merged_at,
+              url: pr.html_url,
+              repository: repoFullName,
+              additions: pr.additions,
+              deletions: pr.deletions,
+              changedFiles: pr.changed_files
+            });
+          }
+        }
+      } catch (error) {
+        logger.warn({ error: error.message, repo: repoFullName }, 'Failed to fetch PRs');
       }
     }
 
-    // Sort by date descending
-    allCommits.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    // Sort all activity by date descending
+    allActivity.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    // Limit total commits returned
-    const limitedCommits = allCommits.slice(0, 100);
+    // Limit total activity returned
+    const limitedActivity = allActivity.slice(0, 50);
 
-    logger.info({ count: limitedCommits.length }, 'Commits fetched');
+    logger.info({
+      commits: limitedActivity.filter(a => a.type === 'commit').length,
+      pullRequests: limitedActivity.filter(a => a.type === 'pull_request').length
+    }, 'Activity fetched');
+
     res.json({
-      commits: limitedCommits,
+      activity: limitedActivity,
       since: sinceDate,
       repositories: Array.from(repos)
     });
@@ -917,8 +959,8 @@ app.get('/api/installations/:installationId/projects/:projectNumber/commits', as
       error: error.message,
       installationId,
       projectNumber
-    }, 'Failed to fetch commits');
-    res.json({ commits: [], since: null, repositories: [] });
+    }, 'Failed to fetch activity');
+    res.json({ activity: [], since: null, repositories: [] });
   }
 });
 

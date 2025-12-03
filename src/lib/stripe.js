@@ -12,7 +12,12 @@ import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Single price ID - Pro plan with 14-day trial at $9/mo
-export const PRICE_ID = process.env.STRIPE_PRICE_ID || 'price_1SZ08dJeyZUKWlEyaAiGwMCv';
+// STRIPE_PRICE_ID is required in production
+export const PRICE_ID = process.env.STRIPE_PRICE_ID;
+
+if (!PRICE_ID && process.env.NODE_ENV === 'production') {
+  console.error('STRIPE_PRICE_ID environment variable is required in production');
+}
 
 // Plan features
 export const PLAN_FEATURES = {
